@@ -10,6 +10,11 @@
 (def tempid (let [n (atom 0)] (fn [] (swap! n dec))))
 
 
+(def virtual-layer-id (atom 0))
+
+(defn inc-layer-id [] (swap! virtual-layer-id inc) @virtual-layer-id)
+(defn dec-layer-id [] (swap! virtual-layer-id dec) @virtual-layer-id)
+
 (def schema 
 	{
 		:layer/button {:db/cardinality :db.cardinality/many}
@@ -19,8 +24,8 @@
 (def conn (d/create-conn schema))
 
 (defn populate! [conn]
-  (let [layer-first (new-entity! conn {:layer/name "Layer 1" :layer/selected true})
-  		layer-second (new-entity! conn {:layer/name "Layer 2" :layer/selected false})]
+  (let [layer-first (new-entity! conn {:layer/virtual-id (inc-layer-id) :layer/name "Layer 1" :layer/selected true})
+  		layer-second (new-entity! conn {:layer/virtual-id (inc-layer-id) :layer/name "Layer 2" :layer/selected false})]
     (d/transact!
     	conn
 			[
@@ -647,8 +652,6 @@
 
 
 
-
-
 (defn deselect-buttons! []
 	(let [selected-buttons @(p/q conn '[ :find [?button ...] :where [?button :button/selected true]])]
 		(doseq [selected-button selected-buttons]
@@ -680,7 +683,7 @@
 
 (defn populate-with-qwerty-layout! [conn layer-name]
 	(deselect-buttons!)
-  	(let [layer (new-entity! conn {:layer/name layer-name :layer/selected false})]
+  	(let [layer (new-entity! conn {:layer/virtual-id (inc-layer-id) :layer/name layer-name :layer/selected false})]
 	    (d/transact!
 	    	conn
 				[
@@ -1040,5 +1043,27 @@
 					       	:layer layer
 					  	}])
 		)
+	)
+)
+
+
+(defn remove-layer! [conn layer-id]
+	(let [  layers  @(p/q conn '[ 	:find ?layer ?later-virtual-id
+									:in $ ?layer-id
+									:where 
+										[?layer-id 	:layer/virtual-id ?virtual-id]
+										[?layer 	:layer/virtual-id ?later-virtual-id] 
+									[(> ?later-virtual-id ?virtual-id)]
+								]
+								layer-id)]
+
+		(p/transact! conn [[:db.fn/retractEntity layer-id]])
+		(dec-layer-id)
+
+		(doseq [[layer-id later-virtual-id] layers]
+			(println (str "ID: " layer-id "VID: " later-virtual-id))
+			(p/transact! conn [[:db/add layer-id :layer/virtual-id (dec later-virtual-id)]]))
+
+		(select-layer! @(p/q conn '[ :find ?layer . :where [?layer :layer/name ] ]) false)
 	)
 )

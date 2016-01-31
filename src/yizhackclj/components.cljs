@@ -84,6 +84,7 @@
 
 (defn layer-view [layer-id]
 	(let [layer 		@(p/pull conn '[*] layer-id)
+		  virtual-id 	(:layer/virtual-id layer)
 		  name    		(:layer/name layer)
 		  selected 		(:layer/selected layer)
 		  buttons-ids 	@(p/q conn '[ 	:find [?button ...]
@@ -102,10 +103,7 @@
 
 				[:button 
 					{
-						:on-click #(
-							(p/transact! conn [[:db.fn/retractEntity layer-id]])
-							(db/select-layer! @(p/q conn '[ :find ?layer . :where [?layer :layer/name ] ]) false)
-						)
+						:on-click #(db/remove-layer! conn layer-id)
 					}
 					"remove"]
 				[:button 
@@ -118,7 +116,7 @@
 						:on-click #(doseq [button-id buttons-ids] (p/transact! conn [[:db/add button-id :button/value ""]]))
 					}
 					"clear"]
-				name
+				(str "ID: " virtual-id " Name: " name)
 			]
 
 			[:div.layout
@@ -133,6 +131,7 @@
 
 (defn layer-thumb-view [layer-id]
 	(let [layer 		@(p/pull conn '[*] layer-id)
+		  virtual-id 	(:layer/virtual-id layer)
 		  name    		(:layer/name layer)
 		  selected 		(:layer/selected layer)
 		  buttons-ids 	@(p/q conn '[ 	:find [?button ...]
@@ -149,7 +148,7 @@
 				:on-click #(db/select-layer! layer-id selected)
 			}
 
-			[:div.control name]
+			[:div.control (str "ID: " virtual-id " Name: " name)]
 
 			[:div.layout
 				(for [button-id buttons-ids]
