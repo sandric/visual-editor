@@ -96,6 +96,10 @@
 	margin-right: 0px;
 }
 
+.layer.thumb.hovered {
+	opacity: 0.5;
+}
+
 .layer.thumb .layout {
 	height: 60px;
 }

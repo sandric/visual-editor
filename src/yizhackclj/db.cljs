@@ -24,8 +24,8 @@
 (def conn (d/create-conn schema))
 
 (defn populate! [conn]
-  (let [layer-first (new-entity! conn {:layer/virtual-id (inc-layer-id) :layer/name "Layer 1" :layer/selected true})
-  		layer-second (new-entity! conn {:layer/virtual-id (inc-layer-id) :layer/name "Layer 2" :layer/selected false})]
+  (let [layer-first (new-entity! conn {:layer/virtual-id (inc-layer-id) :layer/name "Layer 1" :layer/selected true :layer/hovered false})
+  		layer-second (new-entity! conn {:layer/virtual-id (inc-layer-id) :layer/name "Layer 2" :layer/selected false :layer/hovered false})]
     (d/transact!
     	conn
 			[
@@ -35,6 +35,7 @@
 			    	:button/column 1
 			       	:button/value "CTRL"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -43,6 +44,7 @@
 			    	:button/column 2
 			       	:button/value "Q"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -51,6 +53,7 @@
 			    	:button/column 3
 			       	:button/value "W"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -59,6 +62,7 @@
 			    	:button/column 4
 			       	:button/value "E"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -67,6 +71,7 @@
 			    	:button/column 5
 			       	:button/value "R"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -75,6 +80,7 @@
 			    	:button/column 6
 			       	:button/value "T"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -83,6 +89,7 @@
 			    	:button/column 7
 			       	:button/value "Y"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -91,6 +98,7 @@
 			    	:button/column 8
 			       	:button/value "U"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -99,6 +107,7 @@
 			    	:button/column 9
 			       	:button/value "I"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -107,6 +116,7 @@
 			    	:button/column 10
 			       	:button/value "O"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -115,6 +125,7 @@
 			    	:button/column 11
 			       	:button/value "P"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -123,6 +134,7 @@
 			    	:button/column 12
 			       	:button/value "CTRL"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -131,6 +143,7 @@
 			    	:button/column 1
 			       	:button/value "ALT"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -139,6 +152,7 @@
 			    	:button/column 2
 			       	:button/value "A"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -147,6 +161,7 @@
 			    	:button/column 3
 			       	:button/value "S"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -155,6 +170,7 @@
 			    	:button/column 4
 			       	:button/value "D"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -163,6 +179,7 @@
 			    	:button/column 5
 			       	:button/value "F"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -171,6 +188,7 @@
 			    	:button/column 6
 			       	:button/value "G"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -179,6 +197,7 @@
 			    	:button/column 7
 			       	:button/value "H"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -187,6 +206,7 @@
 			    	:button/column 8
 			       	:button/value "J"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -195,6 +215,7 @@
 			    	:button/column 9
 			       	:button/value "K"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -203,6 +224,7 @@
 			    	:button/column 10
 			       	:button/value "L"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -211,6 +233,7 @@
 			    	:button/column 11
 			       	:button/value "L"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -219,6 +242,7 @@
 			    	:button/column 12
 			       	:button/value "ALT"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -227,6 +251,7 @@
 			    	:button/column 2
 			       	:button/value "Z"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -235,6 +260,7 @@
 			    	:button/column 3
 			       	:button/value "X"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -243,6 +269,7 @@
 			    	:button/column 4
 			       	:button/value "C"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -251,6 +278,7 @@
 			    	:button/column 5
 			       	:button/value "V"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -259,6 +287,7 @@
 			    	:button/column 6
 			       	:button/value "B"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -267,6 +296,7 @@
 			    	:button/column 7
 			       	:button/value "N"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -275,6 +305,7 @@
 			    	:button/column 8
 			       	:button/value "M"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -283,6 +314,7 @@
 			    	:button/column 9
 			       	:button/value "M"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -291,6 +323,7 @@
 			    	:button/column 10
 			       	:button/value "M"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -299,6 +332,7 @@
 			    	:button/column 11
 			       	:button/value "M"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			  	{
@@ -307,6 +341,7 @@
 			    	:button/column 5
 			       	:button/value "BKSP"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -315,6 +350,7 @@
 			    	:button/column 6
 			       	:button/value "SPC"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			  	{
@@ -323,6 +359,7 @@
 			    	:button/column 7
 			       	:button/value "ENTR"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 			    {
@@ -331,6 +368,7 @@
 			    	:button/column 8
 			       	:button/value "TAB"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-first
 			  	}
 
@@ -347,6 +385,7 @@
 			    	:button/column 1
 			       	:button/value "CTRL"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -355,6 +394,7 @@
 			    	:button/column 2
 			       	:button/value "Q"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -363,6 +403,7 @@
 			    	:button/column 3
 			       	:button/value "W"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -371,6 +412,7 @@
 			    	:button/column 4
 			       	:button/value "E"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -379,6 +421,7 @@
 			    	:button/column 5
 			       	:button/value "R"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -387,6 +430,7 @@
 			    	:button/column 6
 			       	:button/value "T"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -395,6 +439,7 @@
 			    	:button/column 7
 			       	:button/value "Y"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -403,6 +448,7 @@
 			    	:button/column 8
 			       	:button/value "U"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -411,6 +457,7 @@
 			    	:button/column 9
 			       	:button/value "I"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -419,6 +466,7 @@
 			    	:button/column 10
 			       	:button/value "O"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -427,6 +475,7 @@
 			    	:button/column 11
 			       	:button/value "P"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -435,6 +484,7 @@
 			    	:button/column 12
 			       	:button/value "CTRL"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -443,6 +493,7 @@
 			    	:button/column 1
 			       	:button/value "ALT"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -451,6 +502,7 @@
 			    	:button/column 2
 			       	:button/value "A"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -459,6 +511,7 @@
 			    	:button/column 3
 			       	:button/value "S"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -467,6 +520,7 @@
 			    	:button/column 4
 			       	:button/value "D"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -475,6 +529,7 @@
 			    	:button/column 5
 			       	:button/value "F"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -483,6 +538,7 @@
 			    	:button/column 6
 			       	:button/value "G"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -491,6 +547,7 @@
 			    	:button/column 7
 			       	:button/value "H"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -499,6 +556,7 @@
 			    	:button/column 8
 			       	:button/value "J"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -507,6 +565,7 @@
 			    	:button/column 9
 			       	:button/value "K"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -515,6 +574,7 @@
 			    	:button/column 10
 			       	:button/value "L"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -523,6 +583,7 @@
 			    	:button/column 11
 			       	:button/value "L"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -531,6 +592,7 @@
 			    	:button/column 12
 			       	:button/value "ALT"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -539,6 +601,7 @@
 			    	:button/column 2
 			       	:button/value "Z"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -547,6 +610,7 @@
 			    	:button/column 3
 			       	:button/value "X"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -555,6 +619,7 @@
 			    	:button/column 4
 			       	:button/value "C"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -563,6 +628,7 @@
 			    	:button/column 5
 			       	:button/value "V"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -571,6 +637,7 @@
 			    	:button/column 6
 			       	:button/value "B"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -579,6 +646,7 @@
 			    	:button/column 7
 			       	:button/value "N"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -587,6 +655,7 @@
 			    	:button/column 8
 			       	:button/value "M"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -595,6 +664,7 @@
 			    	:button/column 9
 			       	:button/value "M"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -603,6 +673,7 @@
 			    	:button/column 10
 			       	:button/value "M"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -611,6 +682,7 @@
 			    	:button/column 11
 			       	:button/value "M"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			  	{
@@ -619,6 +691,7 @@
 			    	:button/column 5
 			       	:button/value "BKSP"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -627,6 +700,7 @@
 			    	:button/column 6
 			       	:button/value "SPC"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			  	{
@@ -635,6 +709,7 @@
 			    	:button/column 7
 			       	:button/value "ENTR"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
 			    {
@@ -643,11 +718,60 @@
 			    	:button/column 8
 			       	:button/value "TAB"
 			       	:button/selected false
+					:button/hovered false
 			       	:layer layer-second
 			  	}
       		]
     )
   )
+)
+
+
+
+(defn hover-layer! [layer-id]
+	(p/transact! conn [[:db/add layer-id :layer/hovered true]])
+)
+
+
+(defn unhover-layer! [layer-id]
+	(p/transact! conn [[:db/add layer-id :layer/hovered false]])
+)
+
+
+
+(defn hover-button! [button-id value]
+	(p/transact! conn [[:db/add button-id :button/hovered true]])
+
+	(when (.startsWith value "LN_")
+		(let [layer-vid (js/parseInt (subs value 3))
+			  layer-id  @(p/q conn '[ 	:find ?layer .
+			  							:in $ ?vid 
+			  							:where 
+			  								[?layer :layer/virtual-id ?vid] 
+			  						]
+			  						layer-vid)]			
+
+			(hover-layer! layer-id)
+		)
+	)
+)
+
+
+(defn unhover-button! [button-id value]
+	(p/transact! conn [[:db/add button-id :button/hovered false]])
+
+	(when (.startsWith value "LN_")
+		(let [layer-vid (js/parseInt (subs value 3))
+			  layer-id  @(p/q conn '[ 	:find ?layer .
+			  							:in $ ?vid 
+			  							:where 
+			  								[?layer :layer/virtual-id ?vid] 
+			  						]
+			  						layer-vid)]			
+
+			(unhover-layer! layer-id)
+		)
+	)
 )
 
 
@@ -683,7 +807,7 @@
 
 (defn populate-with-qwerty-layout! [conn layer-name]
 	(deselect-buttons!)
-  	(let [layer (new-entity! conn {:layer/virtual-id (inc-layer-id) :layer/name layer-name :layer/selected false})]
+  	(let [layer (new-entity! conn {:layer/virtual-id (inc-layer-id) :layer/name layer-name :layer/selected false :layer/hovered false})]
 	    (d/transact!
 	    	conn
 				[
@@ -693,6 +817,7 @@
 				    	:button/column 1
 				       	:button/value "CTRL"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -701,6 +826,7 @@
 				    	:button/column 2
 				       	:button/value "Q"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -709,6 +835,7 @@
 				    	:button/column 3
 				       	:button/value "W"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -717,6 +844,7 @@
 				    	:button/column 4
 				       	:button/value "E"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -725,6 +853,7 @@
 				    	:button/column 5
 				       	:button/value "R"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -733,6 +862,7 @@
 				    	:button/column 6
 				       	:button/value "T"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -741,6 +871,7 @@
 				    	:button/column 7
 				       	:button/value "Y"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -749,6 +880,7 @@
 				    	:button/column 8
 				       	:button/value "U"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -757,6 +889,7 @@
 				    	:button/column 9
 				       	:button/value "I"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -765,6 +898,7 @@
 				    	:button/column 10
 				       	:button/value "O"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -773,6 +907,7 @@
 				    	:button/column 11
 				       	:button/value "P"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -781,6 +916,7 @@
 				    	:button/column 12
 				       	:button/value "CTRL"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -789,6 +925,7 @@
 				    	:button/column 1
 				       	:button/value "ALT"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -797,6 +934,7 @@
 				    	:button/column 2
 				       	:button/value "A"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -805,6 +943,7 @@
 				    	:button/column 3
 				       	:button/value "S"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -813,6 +952,7 @@
 				    	:button/column 4
 				       	:button/value "D"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -821,6 +961,7 @@
 				    	:button/column 5
 				       	:button/value "F"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -829,6 +970,7 @@
 				    	:button/column 6
 				       	:button/value "G"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -837,6 +979,7 @@
 				    	:button/column 7
 				       	:button/value "H"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -845,6 +988,7 @@
 				    	:button/column 8
 				       	:button/value "J"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -853,6 +997,7 @@
 				    	:button/column 9
 				       	:button/value "K"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -861,6 +1006,7 @@
 				    	:button/column 10
 				       	:button/value "L"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -869,6 +1015,7 @@
 				    	:button/column 11
 				       	:button/value "L"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -877,6 +1024,7 @@
 				    	:button/column 12
 				       	:button/value "ALT"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -885,6 +1033,7 @@
 				    	:button/column 2
 				       	:button/value "Z"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -893,6 +1042,7 @@
 				    	:button/column 3
 				       	:button/value "X"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -901,6 +1051,7 @@
 				    	:button/column 4
 				       	:button/value "C"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -909,6 +1060,7 @@
 				    	:button/column 5
 				       	:button/value "V"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -917,6 +1069,7 @@
 				    	:button/column 6
 				       	:button/value "B"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -925,6 +1078,7 @@
 				    	:button/column 7
 				       	:button/value "N"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -933,6 +1087,7 @@
 				    	:button/column 8
 				       	:button/value "M"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -941,6 +1096,7 @@
 				    	:button/column 9
 				       	:button/value "M"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -949,6 +1105,7 @@
 				    	:button/column 10
 				       	:button/value "M"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -957,6 +1114,7 @@
 				    	:button/column 11
 				       	:button/value "M"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				  	{
@@ -965,6 +1123,7 @@
 				    	:button/column 5
 				       	:button/value "BKSP"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -973,6 +1132,7 @@
 				    	:button/column 6
 				       	:button/value "SPC"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				  	{
@@ -981,6 +1141,7 @@
 				    	:button/column 7
 				       	:button/value "ENTR"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 				    {
@@ -989,6 +1150,7 @@
 				    	:button/column 8
 				       	:button/value "TAB"
 				       	:button/selected false
+						:button/hovered false
 				       	:layer layer
 				  	}
 	      		]
@@ -1047,22 +1209,48 @@
 )
 
 
-(defn remove-layer! [conn layer-id]
-	(let [  layers  @(p/q conn '[ 	:find ?layer ?later-virtual-id
-									:in $ ?layer-id
-									:where 
-										[?layer-id 	:layer/virtual-id ?virtual-id]
-										[?layer 	:layer/virtual-id ?later-virtual-id] 
-									[(> ?later-virtual-id ?virtual-id)]
-								]
-								layer-id)]
+(defn remove-layer! [conn layer-id layer-virtual-id]
+	(let [  layers  			@(p/q conn '[ 	:find ?layer ?later-virtual-id
+												:in $ ?layer-id
+												:where 
+													[?layer-id 	:layer/virtual-id ?virtual-id]
+													[?layer 	:layer/virtual-id ?later-virtual-id] 
+												[(> ?later-virtual-id ?virtual-id)]
+											]
+											layer-id)
+
+			button-references 	@(p/q conn '[ 	:find [?button ...] 
+												:in $ ?val 
+												:where 
+													[?button :button/value ?val] 
+												] 
+												(str "LN_" layer-virtual-id))]
+
+
+		(doseq [button-id button-references]
+			(p/transact! conn [[:db/add button-id :button/value ""]]))
+
+
 
 		(p/transact! conn [[:db.fn/retractEntity layer-id]])
 		(dec-layer-id)
 
 		(doseq [[layer-id later-virtual-id] layers]
-			(println (str "ID: " layer-id "VID: " later-virtual-id))
-			(p/transact! conn [[:db/add layer-id :layer/virtual-id (dec later-virtual-id)]]))
+			(p/transact! conn [[:db/add layer-id :layer/virtual-id (dec later-virtual-id)]])
+
+			(let [button-references 	@(p/q conn '[ 	:find [?button ...] 
+												:in $ ?val 
+												:where 
+													[?button :button/value ?val] 
+												] 
+												(str "LN_" later-virtual-id))]
+
+				(doseq [button-id button-references]
+					(p/transact! conn [[:db/add button-id :button/value (str "LN_" (dec later-virtual-id))]])
+				)
+			)
+		)
+
 
 		(select-layer! @(p/q conn '[ :find ?layer . :where [?layer :layer/name ] ]) false)
 	)

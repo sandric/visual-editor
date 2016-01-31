@@ -17,6 +17,7 @@
 			(= value "SPC") "black"
 			(= value "ENTR") "magenta"
 			(= value "TAB") "white"
+			(.startsWith value "LN_") "greenyellow"
 			:else "gainsboro"
 		)
 	)
@@ -31,17 +32,28 @@
 		  column    (:button/column button)
 		  value     (:button/value button)
 		  selected  (:button/selected button)
+		  hovered   (:button/hovered button)
 		  ]
 		[:div.button 
 			{
 				:style {
 					:background-color (get-button-color value selected)
 
+					:opacity (if hovered 0.5 1)
+
 					:left (if (> column 6) (+ (* column 55) 100) (* column 55))
 					:top  (* (dec row) 55)
 				}
 
-				:on-click #(db/select-button! button-id selected)
+				:on-click #(
+						(db/select-button! button-id selected)
+						(db/unhover-button! button-id value)
+					)
+
+				:on-mouse-over #(db/hover-button! button-id value)
+
+				:on-mouse-out #(db/unhover-button! button-id value)
+
 			}
 			
 			[:input 
@@ -103,7 +115,7 @@
 
 				[:button 
 					{
-						:on-click #(db/remove-layer! conn layer-id)
+						:on-click #(db/remove-layer! conn layer-id virtual-id)
 					}
 					"remove"]
 				[:button 
@@ -134,6 +146,8 @@
 		  virtual-id 	(:layer/virtual-id layer)
 		  name    		(:layer/name layer)
 		  selected 		(:layer/selected layer)
+		  hovered 		(:layer/hovered layer)
+
 		  buttons-ids 	@(p/q conn '[ 	:find [?button ...]
 		  								:in $ ?layer-id 
 		  								:where 
@@ -143,7 +157,7 @@
 		  							layer-id)]
 		[:div.layer.thumb 
 			{
-				:class (when selected "selected")
+				:class (str (when selected "selected") (when hovered " hovered"))
 
 				:on-click #(db/select-layer! layer-id selected)
 			}
