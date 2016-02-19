@@ -1,7 +1,8 @@
 (ns yizhackclj.components
   (:require [reagent.core :as r]
   			[posh.core :as p]
-  			[yizhackclj.db :as db :refer [conn]]))
+  			[yizhackclj.db :as db :refer [conn]]
+  			[cognitect.transit :as t]))
 
 
 

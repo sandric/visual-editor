@@ -952,3 +952,44 @@
 		)
 	)
 )
+
+
+
+
+(defn convert-button-to-edn [button-id]
+	(let [button    @(p/pull conn '[*] button-id)
+				  	row       (:button/row button)
+				  	column    (:button/column button)
+				  	value     (:button/value button)]
+
+		{:row row :column column :value value}
+	)
+)
+
+
+(defn convert-layer-to-edn [layer-id]
+	(let   [layer     	@(p/pull conn '[*] layer-id)
+		  	name    	(:layer/name layer)
+		  	vid 		(:layer/virtual-id layer)
+			buttons-ids @(p/q conn '[ 	:find [?button ...]
+		  									:in $ ?layer-id 
+		  									:where 
+		  										[?button :button/value] 
+		  										[?button :layer ?layer-id]  
+		  								] 
+		  								layer-id)]
+
+
+		{:name name :id vid :buttons (map convert-button-to-edn buttons-ids)}
+	)
+)
+
+
+(defn convert-keyboard-to-edn []
+	(let [layers-ids	@(p/q conn '[:find [?layer-id ...] 
+										:where [?layer-id :layer/name]
+									])]
+
+		(map convert-layer-to-edn layers-ids)
+	)
+)
