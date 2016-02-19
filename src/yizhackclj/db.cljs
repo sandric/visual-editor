@@ -15,15 +15,6 @@
 (defn inc-layer-id [] (swap! virtual-layer-id inc) @virtual-layer-id)
 (defn dec-layer-id [] (swap! virtual-layer-id dec) @virtual-layer-id)
 
-(def schema 
-	{
-		:layer/button {:db/cardinality :db.cardinality/many}
-	}
-)
-
-(def conn (d/create-conn schema))
-
-
 
 (defn parse-layer [value]
 	(if (.startsWith value "LN_")
@@ -33,23 +24,24 @@
 )
 
 
-
-
-(defn populate-with-empty-layout! [conn layer-name]
-	(let [layer-id 	 	(populate-with-qwerty-layout! conn layer-name)
-		  buttons-ids 	@(p/q conn '[ 	:find [?button ...]
-		  									:in $ ?layer-id 
-		  									:where 
-		  										[?button :button/value] 
-		  										[?button :layer ?layer-id]  
-		  								] 
-		  								layer-id)]
-
-		(doseq [button-id buttons-ids] 
-			(p/transact! conn [[:db/add button-id :button/value ""]])
-		)
-	)
+(defn to-json [keyboard]
+  	(.stringify js/JSON (clj->js keyboard))
 )
+
+(defn parse-json [json]
+	(js->clj (JSON.parse json) :keywordize-keys true)
+)
+
+
+
+(def schema 
+	{
+		:layer/button {:db/cardinality :db.cardinality/many}
+	}
+)
+
+(def conn (d/create-conn schema))
+
 
 
 
@@ -127,17 +119,6 @@
 )
 
 
-
-
-
-
-(defn to-json [keyboard]
-  	(.stringify js/JSON (clj->js keyboard))
-)
-
-(defn parse-json [json]
-	(js->clj (JSON.parse json) :keywordize-keys true)
-)
 
 
 
@@ -249,6 +230,8 @@
 
 
 
+
+
 (defn populate-fixture-keyboard []
 	(deserialize-keyboard "[{\"name\":\"Layer 1\",\"id\":1,\"buttons\":[{\"row\":2,\"column\":10,\"value\":\"L\"},{\"row\":1,\"column\":10,\"value\":\"O\"},{\"row\":1,\"column\":12,\"value\":\"CTRL\"},{\"row\":1,\"column\":11,\"value\":\"P\"},{\"row\":2,\"column\":8,\"value\":\"J\"},{\"row\":2,\"column\":5,\"value\":\"F\"},{\"row\":3,\"column\":8,\"value\":\"M\"},{\"row\":2,\"column\":12,\"value\":\"ALT\"},{\"row\":2,\"column\":3,\"value\":\"S\"},{\"row\":2,\"column\":4,\"value\":\"D\"},{\"row\":4,\"column\":5,\"value\":\"BKSP\"},{\"row\":4,\"column\":8,\"value\":\"TAB\"},{\"row\":1,\"column\":5,\"value\":\"R\"},{\"row\":1,\"column\":3,\"value\":\"W\"},{\"row\":3,\"column\":11,\"value\":\"M\"},{\"row\":4,\"column\":6,\"value\":\"SPC\"},{\"row\":2,\"column\":7,\"value\":\"H\"},{\"row\":2,\"column\":9,\"value\":\"K\"},{\"row\":1,\"column\":8,\"value\":\"U\"},{\"row\":1,\"column\":1,\"value\":\"CTRL\"},{\"row\":2,\"column\":11,\"value\":\"L\"},{\"row\":4,\"column\":7,\"value\":\"ENTR\"},{\"row\":2,\"column\":6,\"value\":\"G\"},{\"row\":1,\"column\":4,\"value\":\"E\"},{\"row\":1,\"column\":7,\"value\":\"Y\"},{\"row\":3,\"column\":7,\"value\":\"N\"},{\"row\":3,\"column\":4,\"value\":\"C\"},{\"row\":3,\"column\":9,\"value\":\"M\"},{\"row\":3,\"column\":5,\"value\":\"V\"},{\"row\":3,\"column\":2,\"value\":\"Z\"},{\"row\":2,\"column\":2,\"value\":\"A\"},{\"row\":2,\"column\":1,\"value\":\"ALT\"},{\"row\":1,\"column\":9,\"value\":\"I\"},{\"row\":3,\"column\":6,\"value\":\"B\"},{\"row\":1,\"column\":6,\"value\":\"T\"},{\"row\":3,\"column\":10,\"value\":\"M\"},{\"row\":1,\"column\":2,\"value\":\"Q\"},{\"row\":3,\"column\":3,\"value\":\"X\"}]},{\"name\":\"Layer 2\",\"id\":2,\"buttons\":[{\"row\":3,\"column\":3,\"value\":\"X\"},{\"row\":3,\"column\":10,\"value\":\"M\"},{\"row\":4,\"column\":6,\"value\":\"SPC\"},{\"row\":2,\"column\":5,\"value\":\"F\"},{\"row\":1,\"column\":6,\"value\":\"T\"},{\"row\":3,\"column\":7,\"value\":\"N\"},{\"row\":1,\"column\":12,\"value\":\"CTRL\"},{\"row\":3,\"column\":4,\"value\":\"C\"},{\"row\":1,\"column\":2,\"value\":\"Q\"},{\"row\":1,\"column\":1,\"value\":\"CTRL\"},{\"row\":1,\"column\":3,\"value\":\"W\"},{\"row\":4,\"column\":5,\"value\":\"BKSP\"},{\"row\":3,\"column\":2,\"value\":\"Z\"},{\"row\":2,\"column\":12,\"value\":\"ALT\"},{\"row\":2,\"column\":4,\"value\":\"D\"},{\"row\":1,\"column\":10,\"value\":\"O\"},{\"row\":3,\"column\":9,\"value\":\"M\"},{\"row\":2,\"column\":6,\"value\":\"G\"},{\"row\":2,\"column\":3,\"value\":\"S\"},{\"row\":1,\"column\":4,\"value\":\"E\"},{\"row\":2,\"column\":1,\"value\":\"ALT\"},{\"row\":2,\"column\":11,\"value\":\"L\"},{\"row\":1,\"column\":8,\"value\":\"U\"},{\"row\":1,\"column\":9,\"value\":\"I\"},{\"row\":2,\"column\":2,\"value\":\"A\"},{\"row\":2,\"column\":7,\"value\":\"H\"},{\"row\":2,\"column\":10,\"value\":\"L\"},{\"row\":3,\"column\":6,\"value\":\"B\"},{\"row\":4,\"column\":7,\"value\":\"ENTR\"},{\"row\":2,\"column\":8,\"value\":\"J\"},{\"row\":3,\"column\":8,\"value\":\"M\"},{\"row\":4,\"column\":8,\"value\":\"TAB\"},{\"row\":1,\"column\":11,\"value\":\"P\"},{\"row\":1,\"column\":5,\"value\":\"R\"},{\"row\":2,\"column\":9,\"value\":\"K\"},{\"row\":1,\"column\":7,\"value\":\"Y\"},{\"row\":3,\"column\":5,\"value\":\"V\"},{\"row\":3,\"column\":11,\"value\":\"M\"}]}]")
 )
@@ -263,9 +246,4 @@
 
 (defn populate-qwerty-layout []
 	(deserialize-layer "{\"name\":\"New QWERTY Layer\",\"buttons\":[{\"row\":2,\"column\":6,\"value\":\"G\"},{\"row\":4,\"column\":5,\"value\":\"BKSP\"},{\"row\":1,\"column\":5,\"value\":\"R\"},{\"row\":4,\"column\":8,\"value\":\"TAB\"},{\"row\":2,\"column\":11,\"value\":\"L\"},{\"row\":2,\"column\":9,\"value\":\"K\"},{\"row\":2,\"column\":1,\"value\":\"ALT\"},{\"row\":1,\"column\":7,\"value\":\"Y\"},{\"row\":4,\"column\":6,\"value\":\"SPC\"},{\"row\":2,\"column\":7,\"value\":\"H\"},{\"row\":2,\"column\":10,\"value\":\"L\"},{\"row\":3,\"column\":10,\"value\":\"M\"},{\"row\":2,\"column\":5,\"value\":\"F\"},{\"row\":1,\"column\":11,\"value\":\"P\"},{\"row\":1,\"column\":6,\"value\":\"T\"},{\"row\":1,\"column\":2,\"value\":\"Q\"},{\"row\":1,\"column\":1,\"value\":\"CTRL\"},{\"row\":4,\"column\":7,\"value\":\"ENTR\"},{\"row\":2,\"column\":3,\"value\":\"S\"},{\"row\":1,\"column\":10,\"value\":\"O\"},{\"row\":1,\"column\":4,\"value\":\"E\"},{\"row\":3,\"column\":3,\"value\":\"X\"},{\"row\":1,\"column\":8,\"value\":\"U\"},{\"row\":2,\"column\":8,\"value\":\"J\"},{\"row\":2,\"column\":12,\"value\":\"ALT\"},{\"row\":2,\"column\":2,\"value\":\"A\"},{\"row\":3,\"column\":9,\"value\":\"M\"},{\"row\":1,\"column\":9,\"value\":\"I\"},{\"row\":3,\"column\":5,\"value\":\"V\"},{\"row\":3,\"column\":7,\"value\":\"N\"},{\"row\":3,\"column\":11,\"value\":\"M\"},{\"row\":1,\"column\":3,\"value\":\"W\"},{\"row\":2,\"column\":4,\"value\":\"D\"},{\"row\":3,\"column\":2,\"value\":\"Z\"},{\"row\":3,\"column\":8,\"value\":\"M\"},{\"row\":3,\"column\":6,\"value\":\"B\"},{\"row\":1,\"column\":12,\"value\":\"CTRL\"},{\"row\":3,\"column\":4,\"value\":\"C\"}]}")
-)
-
-
-(defn populate-my-layout []
-	(deserialize-layer "{\"name\":\"New my Layer\",\"buttons\":[{\"row\":3,\"column\":3,\"value\":\"\"},{\"row\":2,\"column\":9,\"value\":\"\"},{\"row\":1,\"column\":12,\"value\":\"\"},{\"row\":1,\"column\":2,\"value\":\"\"},{\"row\":4,\"column\":7,\"value\":\"\"},{\"row\":1,\"column\":6,\"value\":\"\"},{\"row\":2,\"column\":7,\"value\":\"\"},{\"row\":1,\"column\":9,\"value\":\"\"},{\"row\":2,\"column\":8,\"value\":\"\"},{\"row\":2,\"column\":5,\"value\":\"\"},{\"row\":3,\"column\":9,\"value\":\"k\"},{\"row\":2,\"column\":11,\"value\":\"\"},{\"row\":2,\"column\":12,\"value\":\"\"},{\"row\":4,\"column\":5,\"value\":\"\"},{\"row\":4,\"column\":6,\"value\":\"\"},{\"row\":3,\"column\":2,\"value\":\"\"},{\"row\":2,\"column\":6,\"value\":\"d\"},{\"row\":1,\"column\":3,\"value\":\"\"},{\"row\":3,\"column\":8,\"value\":\"\"},{\"row\":1,\"column\":7,\"value\":\"\"},{\"row\":3,\"column\":6,\"value\":\"\"},{\"row\":1,\"column\":11,\"value\":\"\"},{\"row\":2,\"column\":1,\"value\":\"\"},{\"row\":3,\"column\":7,\"value\":\"\"},{\"row\":1,\"column\":5,\"value\":\"\"},{\"row\":1,\"column\":8,\"value\":\"\"},{\"row\":2,\"column\":4,\"value\":\"\"},{\"row\":2,\"column\":10,\"value\":\"\"},{\"row\":2,\"column\":2,\"value\":\"\"},{\"row\":1,\"column\":10,\"value\":\"\"},{\"row\":4,\"column\":8,\"value\":\"\"},{\"row\":3,\"column\":10,\"value\":\"\"},{\"row\":1,\"column\":4,\"value\":\"\"},{\"row\":3,\"column\":4,\"value\":\"\"},{\"row\":3,\"column\":5,\"value\":\"\"},{\"row\":3,\"column\":11,\"value\":\"\"},{\"row\":1,\"column\":1,\"value\":\"\"},{\"row\":2,\"column\":3,\"value\":\"\"}]}")
 )
