@@ -726,6 +726,14 @@
   )
 )
 
+(defn parse-layer [value]
+	(if (.startsWith value "LN_")
+		(js/parseInt (subs value 3))
+		0
+	)
+)
+
+
 
 
 (defn hover-layer! [layer-id]

@@ -5,83 +5,85 @@
 
 
 
+(def hovered-virtual-id (r/atom 0))
+(def selected-virtual-id (r/atom 0))
 
 
-(defn get-button-color [value selected]
-	(if selected
-		"aquamarine"
-		(cond
-			(= value "ALT") "red"
-			(= value "CTRL") "blue"
-			(= value "BKSP") "yellow"
-			(= value "SPC") "black"
-			(= value "ENTR") "magenta"
-			(= value "TAB") "white"
-			(.startsWith value "LN_") "greenyellow"
-			:else "gainsboro"
-		)
+
+(defn get-button-color [value selected hovered]
+	(cond
+		selected "aquamarine" 
+		hovered  "lavender" 
+		(= value "ALT") "red"
+		(= value "CTRL") "blue"
+		(= value "BKSP") "yellow"
+		(= value "SPC") "black"
+		(= value "ENTR") "magenta"
+		(= value "TAB") "white"
+		(.startsWith value "LN_") "greenyellow"
+		:else "gainsboro"
 	)
 )
 
 
 (defn button-view [button-id]
 
-	(let [
-		  button    @(p/pull conn '[*] button-id)
-		  row       (:button/row button)
-		  column    (:button/column button)
-		  value     (:button/value button)
-		  selected  (:button/selected button)
-		  hovered   (:button/hovered button)
-		  ]
-		[:div.button 
-			{
-				:style {
-					:background-color (get-button-color value selected)
+	(let [hovered 	(r/atom false)
+		  selected 	(r/atom false)]
 
-					:opacity (if hovered 0.5 1)
+		(fn []
+			(let [button    @(p/pull conn '[*] button-id)
+				  row       (:button/row button)
+				  column    (:button/column button)
+				  value     (:button/value button)]
 
-					:left (if (> column 6) (+ (* column 55) 100) (* column 55))
-					:top  (* (dec row) 55)
-				}
+				(when @hovered (reset! hovered-virtual-id (db/parse-layer value)))
 
-				:on-click #(
-						(db/select-button! button-id selected)
-						(db/unhover-button! button-id value)
-					)
+				[:div.button 
+					{
+						:style {
+							:background-color (get-button-color value @selected @hovered)
 
-				:on-mouse-over #(db/hover-button! button-id value)
+							:opacity (if @hovered 0.5 1)
 
-				:on-mouse-out #(db/unhover-button! button-id value)
+							:left (if (> column 6) (+ (* column 55) 100) (* column 55))
+							:top  (* (dec row) 55)
+						}
 
-			}
-			
-			[:input 
-				{
-					:type "text" 
-					:maxLength 4
-					:value value 
-	                
-	                :on-change #(p/transact! conn [[:db/add button-id :button/value (-> % .-target .-value)]])
-				}
-			] 
-		]
+						:on-click #(swap! selected not)
+
+						:on-mouse-over #(reset! hovered true)
+
+						:on-mouse-out  #(reset! hovered false)
+
+					}
+					
+					[:input 
+						{
+							:type "text" 
+							:maxLength 4
+							:value value 
+			                
+			                :on-change #(p/transact! conn [[:db/add button-id :button/value (-> % .-target .-value)]])
+						}
+					] 
+				]
+			)
+		)
 	)
 )
 
 (defn button-thumb-view [button-id]
 
-	(let [
-		  button    @(p/pull conn '[*] button-id)
+	(let [button    @(p/pull conn '[*] button-id)
 		  row       (:button/row button)
 		  column    (:button/column button)
-		  value     (:button/value button)
-		  selected  (:button/selected button)
-		  ]
+		  value     (:button/value button)]
+
 		[:div.button.thumb 
 			{
 				:style {
-					:background-color (get-button-color value selected)
+					:background-color (get-button-color value false false)
 
 					:left (if (> column 6) (+ (* column 11) 20) (* column 11))
 					:top  (* (dec row) 11)
@@ -98,7 +100,6 @@
 	(let [layer 		@(p/pull conn '[*] layer-id)
 		  virtual-id 	(:layer/virtual-id layer)
 		  name    		(:layer/name layer)
-		  selected 		(:layer/selected layer)
 		  buttons-ids 	@(p/q conn '[ 	:find [?button ...]
 		  								:in $ ?layer-id 
 		  								:where 
@@ -108,7 +109,7 @@
 		  							layer-id)]
 		[:div.layer 
 			{
-				:class (when selected "selected")
+				:class (when (= @selected-virtual-id virtual-id) "selected")
 			}
 
 			[:div.control
@@ -145,8 +146,6 @@
 	(let [layer 		@(p/pull conn '[*] layer-id)
 		  virtual-id 	(:layer/virtual-id layer)
 		  name    		(:layer/name layer)
-		  selected 		(:layer/selected layer)
-		  hovered 		(:layer/hovered layer)
 
 		  buttons-ids 	@(p/q conn '[ 	:find [?button ...]
 		  								:in $ ?layer-id 
@@ -157,9 +156,9 @@
 		  							layer-id)]
 		[:div.layer.thumb 
 			{
-				:class (str (when selected "selected") (when hovered " hovered"))
+				:class (str (when (= @selected-virtual-id virtual-id) "selected") (when (= @hovered-virtual-id virtual-id) " hovered"))
 
-				:on-click #(db/select-layer! layer-id selected)
+				:on-click #(reset! selected-virtual-id virtual-id)
 			}
 
 			[:div.control (str "ID: " virtual-id " Name: " name)]
