@@ -23,6 +23,7 @@
 
 (def conn (d/create-conn schema))
 
+
 (defn populate! [conn]
   (let [layer-first (new-entity! conn {:layer/virtual-id (inc-layer-id) :layer/name "Layer 1"})
   		layer-second (new-entity! conn {:layer/virtual-id (inc-layer-id) :layer/name "Layer 2"})]
@@ -295,7 +296,6 @@
 			       	:button/value "TAB"
 			       	:layer layer-first
 			  	}
-
 
 
 
@@ -581,8 +581,7 @@
 				    	:db/id (tempid)
 				    	:button/row 1
 				    	:button/column 1
-				       	:button/value "CTRL"
-
+				       	:button/value "CTRL"				       	
 				       	:layer layer
 				  	}
 				    {
@@ -590,7 +589,6 @@
 				    	:button/row 1
 				    	:button/column 2
 				       	:button/value "Q"
-
 				       	:layer layer
 				  	}
 				    {
@@ -598,7 +596,6 @@
 				    	:button/row 1
 				    	:button/column 3
 				       	:button/value "W"
-
 				       	:layer layer
 				  	}
 				    {
@@ -606,7 +603,6 @@
 				    	:button/row 1
 				    	:button/column 4
 				       	:button/value "E"
-
 				       	:layer layer
 				  	}
 				    {
@@ -614,7 +610,6 @@
 				    	:button/row 1
 				    	:button/column 5
 				       	:button/value "R"
-
 				       	:layer layer
 				  	}
 				    {
@@ -622,7 +617,6 @@
 				    	:button/row 1
 				    	:button/column 6
 				       	:button/value "T"
-
 				       	:layer layer
 				  	}
 				    {
@@ -630,7 +624,6 @@
 				    	:button/row 1
 				    	:button/column 7
 				       	:button/value "Y"
-
 				       	:layer layer
 				  	}
 				    {
@@ -638,7 +631,6 @@
 				    	:button/row 1
 				    	:button/column 8
 				       	:button/value "U"
-
 				       	:layer layer
 				  	}
 				    {
@@ -646,7 +638,6 @@
 				    	:button/row 1
 				    	:button/column 9
 				       	:button/value "I"
-
 				       	:layer layer
 				  	}
 				    {
@@ -654,7 +645,6 @@
 				    	:button/row 1
 				    	:button/column 10
 				       	:button/value "O"
-
 				       	:layer layer
 				  	}
 				    {
@@ -662,7 +652,6 @@
 				    	:button/row 1
 				    	:button/column 11
 				       	:button/value "P"
-
 				       	:layer layer
 				  	}
 				    {
@@ -670,7 +659,6 @@
 				    	:button/row 1
 				    	:button/column 12
 				       	:button/value "CTRL"
-
 				       	:layer layer
 				  	}
 				    {
@@ -678,7 +666,6 @@
 				    	:button/row 2
 				    	:button/column 1
 				       	:button/value "ALT"
-
 				       	:layer layer
 				  	}
 				    {
@@ -686,7 +673,6 @@
 				    	:button/row 2
 				    	:button/column 2
 				       	:button/value "A"
-
 				       	:layer layer
 				  	}
 				    {
@@ -694,7 +680,6 @@
 				    	:button/row 2
 				    	:button/column 3
 				       	:button/value "S"
-
 				       	:layer layer
 				  	}
 				    {
@@ -702,7 +687,6 @@
 				    	:button/row 2
 				    	:button/column 4
 				       	:button/value "D"
-
 				       	:layer layer
 				  	}
 				    {
@@ -710,7 +694,6 @@
 				    	:button/row 2
 				    	:button/column 5
 				       	:button/value "F"
-
 				       	:layer layer
 				  	}
 				    {
@@ -718,7 +701,6 @@
 				    	:button/row 2
 				    	:button/column 6
 				       	:button/value "G"
-
 				       	:layer layer
 				  	}
 				    {
@@ -726,7 +708,6 @@
 				    	:button/row 2
 				    	:button/column 7
 				       	:button/value "H"
-
 				       	:layer layer
 				  	}
 				    {
@@ -734,7 +715,6 @@
 				    	:button/row 2
 				    	:button/column 8
 				       	:button/value "J"
-
 				       	:layer layer
 				  	}
 				    {
@@ -742,7 +722,6 @@
 				    	:button/row 2
 				    	:button/column 9
 				       	:button/value "K"
-
 				       	:layer layer
 				  	}
 				    {
@@ -750,7 +729,6 @@
 				    	:button/row 2
 				    	:button/column 10
 				       	:button/value "L"
-
 				       	:layer layer
 				  	}
 				    {
@@ -758,7 +736,6 @@
 				    	:button/row 2
 				    	:button/column 11
 				       	:button/value "L"
-
 				       	:layer layer
 				  	}
 				    {
@@ -766,7 +743,6 @@
 				    	:button/row 2
 				    	:button/column 12
 				       	:button/value "ALT"
-
 				       	:layer layer
 				  	}
 				    {
@@ -774,7 +750,6 @@
 				    	:button/row 3
 				    	:button/column 2
 				       	:button/value "Z"
-
 				       	:layer layer
 				  	}
 				    {
@@ -782,7 +757,6 @@
 				    	:button/row 3
 				    	:button/column 3
 				       	:button/value "X"
-
 				       	:layer layer
 				  	}
 				    {
@@ -790,7 +764,6 @@
 				    	:button/row 3
 				    	:button/column 4
 				       	:button/value "C"
-
 				       	:layer layer
 				  	}
 				    {
@@ -798,7 +771,6 @@
 				    	:button/row 3
 				    	:button/column 5
 				       	:button/value "V"
-
 				       	:layer layer
 				  	}
 				    {
@@ -806,7 +778,6 @@
 				    	:button/row 3
 				    	:button/column 6
 				       	:button/value "B"
-
 				       	:layer layer
 				  	}
 				    {
@@ -814,7 +785,6 @@
 				    	:button/row 3
 				    	:button/column 7
 				       	:button/value "N"
-
 				       	:layer layer
 				  	}
 				    {
@@ -822,7 +792,6 @@
 				    	:button/row 3
 				    	:button/column 8
 				       	:button/value "M"
-
 				       	:layer layer
 				  	}
 				    {
@@ -830,7 +799,6 @@
 				    	:button/row 3
 				    	:button/column 9
 				       	:button/value "M"
-
 				       	:layer layer
 				  	}
 				    {
@@ -838,47 +806,41 @@
 				    	:button/row 3
 				    	:button/column 10
 				       	:button/value "M"
-
 				       	:layer layer
 				  	}
 				    {
 				    	:db/id (tempid)
 				    	:button/row 3
 				    	:button/column 11
-				       	:button/value "M"
-
+				       	:button/value "M"				       	
 				       	:layer layer
 				  	}
 				  	{
 				    	:db/id (tempid)
 				    	:button/row 4
 				    	:button/column 5
-				       	:button/value "BKSP"
-
+				       	:button/value "BKSP"				       	
 				       	:layer layer
 				  	}
 				    {
 				    	:db/id (tempid)
 				    	:button/row 4
 				    	:button/column 6
-				       	:button/value "SPC"
-
+				       	:button/value "SPC"				       	
 				       	:layer layer
 				  	}
 				  	{
 				    	:db/id (tempid)
 				    	:button/row 4
 				    	:button/column 7
-				       	:button/value "ENTR"
-
+				       	:button/value "ENTR"				       	
 				       	:layer layer
 				  	}
 				    {
 				    	:db/id (tempid)
 				    	:button/row 4
 				    	:button/column 8
-				       	:button/value "TAB"
-
+				       	:button/value "TAB"				       	
 				       	:layer layer
 				  	}
 	      		]
