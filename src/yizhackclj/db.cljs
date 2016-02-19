@@ -956,6 +956,60 @@
 
 
 
+
+
+(defn to-json [keyboard]
+  	(.stringify js/JSON (clj->js keyboard))
+)
+
+(defn parse-json [json]
+	(js->clj (JSON.parse json) :keywordize-keys true)
+)
+
+
+
+(defn generate-button-datom [row column value layer]
+    (d/transact!
+    	conn
+			[
+			    {
+			    	:db/id (tempid)
+			    	:button/row row
+			    	:button/column column
+			       	:button/value value				       	
+			       	:layer layer
+			  	}
+			]
+	)
+)
+
+
+(defn generate-layer-datom [name virtual-id buttons]
+
+	(let [layer (new-entity! conn {:layer/virtual-id virtual-id :layer/name name})]
+
+		(doseq [button buttons]
+			(generate-button-datom (:row button) (:column button) (:value button) layer)
+		)
+	)
+)
+
+
+(defn generate-keyboard-datom [layers]
+	(reset! virtual-layer-id 0)
+
+	(doseq [layer layers]
+		(inc-layer-id)
+		(generate-layer-datom 
+			(:name layer)
+			(:id layer)
+			(:buttons layer))
+	)
+)
+
+
+
+
 (defn convert-button-to-edn [button-id]
 	(let [button    @(p/pull conn '[*] button-id)
 				  	row       (:button/row button)
@@ -992,4 +1046,29 @@
 
 		(map convert-layer-to-edn layers-ids)
 	)
+)
+
+
+
+
+(defn deserialize-layer [json]
+
+	(let [parsed-layer (parse-json json)]
+		(generate-layer-datom 
+			(:name parsed-layer)
+			(inc-layer-id) 
+			(:buttons parsed-layer))
+	)
+)
+
+
+
+
+(defn deserialize-keyboard [json]
+	(generate-keyboard-datom (parse-json json))
+)
+
+
+(defn serialize-keyboard [layers]
+	(to-json layers)
 )
