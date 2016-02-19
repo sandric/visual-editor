@@ -8,7 +8,8 @@
 (def hovered-virtual-id (r/atom 0))
 (def selected-virtual-id (r/atom 0))
 
-
+(def hovered-button-id (r/atom 0))
+(def selected-hovered-id (r/atom 0))
 
 (defn get-button-color [value selected hovered]
 	(cond
@@ -28,8 +29,7 @@
 
 (defn button-view [button-id]
 
-	(let [hovered 	(r/atom false)
-		  selected 	(r/atom false)]
+	(let [hovered 	(r/atom false)]
 
 		(fn []
 			(let [button    @(p/pull conn '[*] button-id)
@@ -42,7 +42,7 @@
 				[:div.button 
 					{
 						:style {
-							:background-color (get-button-color value @selected @hovered)
+							:background-color (get-button-color value (= @selected-hovered-id button-id) @hovered)
 
 							:opacity (if @hovered 0.5 1)
 
@@ -50,7 +50,7 @@
 							:top  (* (dec row) 55)
 						}
 
-						:on-click #(swap! selected not)
+						:on-click #(reset! selected-hovered-id button-id)
 
 						:on-mouse-over #(reset! hovered true)
 
@@ -97,6 +97,7 @@
 
 
 (defn layer-view [layer-id]
+
 	(let [layer 		@(p/pull conn '[*] layer-id)
 		  virtual-id 	(:layer/virtual-id layer)
 		  name    		(:layer/name layer)
@@ -143,6 +144,7 @@
 
 
 (defn layer-thumb-view [layer-id]
+
 	(let [layer 		@(p/pull conn '[*] layer-id)
 		  virtual-id 	(:layer/virtual-id layer)
 		  name    		(:layer/name layer)
@@ -173,6 +175,7 @@
 )
 
 (defn keyboard-view []
+
 	(let [layer-ids @(p/q conn '[:find [?layer-id ...] :where [?layer-id :layer/name]])]
 		[:div.keyboard
 			[:div.control 
