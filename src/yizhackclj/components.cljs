@@ -182,12 +182,12 @@
 			[:div.control 
 				[:button 
 					{
-						:on-click #(db/populate-with-empty-layout! conn "New empty layer")
+						:on-click #(db/populate-empty-layout)
 					}
 					"new EMPTY"]
 				[:button 
 					{
-						:on-click #(db/populate-with-qwerty-layout! conn "New QWERTY layer")
+						:on-click #(db/populate-qwerty-layout)
 					}
 					"new QWERTY"]
 				"My Keyboard"
