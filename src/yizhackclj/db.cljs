@@ -1069,6 +1069,11 @@
 )
 
 
-(defn serialize-keyboard [layers]
-	(to-json layers)
+(defn serialize-keyboard []
+	(to-json (convert-keyboard-to-edn))
+)
+
+
+(defn create-my-layer []
+	(deserialize-layer "{\"name\":\"New empty layer\",\"id\":3,\"buttons\":[{\"row\":3,\"column\":3,\"value\":\"\"},{\"row\":2,\"column\":9,\"value\":\"\"},{\"row\":1,\"column\":12,\"value\":\"\"},{\"row\":1,\"column\":2,\"value\":\"\"},{\"row\":4,\"column\":7,\"value\":\"\"},{\"row\":1,\"column\":6,\"value\":\"\"},{\"row\":2,\"column\":7,\"value\":\"\"},{\"row\":1,\"column\":9,\"value\":\"\"},{\"row\":2,\"column\":8,\"value\":\"\"},{\"row\":2,\"column\":5,\"value\":\"\"},{\"row\":3,\"column\":9,\"value\":\"k\"},{\"row\":2,\"column\":11,\"value\":\"\"},{\"row\":2,\"column\":12,\"value\":\"\"},{\"row\":4,\"column\":5,\"value\":\"\"},{\"row\":4,\"column\":6,\"value\":\"\"},{\"row\":3,\"column\":2,\"value\":\"\"},{\"row\":2,\"column\":6,\"value\":\"d\"},{\"row\":1,\"column\":3,\"value\":\"\"},{\"row\":3,\"column\":8,\"value\":\"\"},{\"row\":1,\"column\":7,\"value\":\"\"},{\"row\":3,\"column\":6,\"value\":\"\"},{\"row\":1,\"column\":11,\"value\":\"\"},{\"row\":2,\"column\":1,\"value\":\"\"},{\"row\":3,\"column\":7,\"value\":\"\"},{\"row\":1,\"column\":5,\"value\":\"\"},{\"row\":1,\"column\":8,\"value\":\"\"},{\"row\":2,\"column\":4,\"value\":\"\"},{\"row\":2,\"column\":10,\"value\":\"\"},{\"row\":2,\"column\":2,\"value\":\"\"},{\"row\":1,\"column\":10,\"value\":\"\"},{\"row\":4,\"column\":8,\"value\":\"\"},{\"row\":3,\"column\":10,\"value\":\"\"},{\"row\":1,\"column\":4,\"value\":\"\"},{\"row\":3,\"column\":4,\"value\":\"\"},{\"row\":3,\"column\":5,\"value\":\"\"},{\"row\":3,\"column\":11,\"value\":\"\"},{\"row\":1,\"column\":1,\"value\":\"\"},{\"row\":2,\"column\":3,\"value\":\"\"}]}")
 )
