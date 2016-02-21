@@ -270,3 +270,25 @@
 		:error-handler on-get-keyboard-request-error-handler
 		})
 )
+
+
+(defn on-post-keyboard-request-handler [response] 
+	(println response)
+)
+
+(defn on-post-keyboard-request-error-handler [{:keys [status status-text]}]
+  (println (str "Error while posting keyboard: " status " " status-text))
+)
+
+(defn post-keyboard-to-server []
+
+	(POST "http://localhost:8080/api/yipost" {
+		:params {	:user "Some fkn user"
+                 	:keyboardID "keyboardID"
+                 	:keyboard (convert-keyboard-to-edn) }
+
+		:format :json 
+		:handler on-post-keyboard-request-handler 
+		:error-handler on-post-keyboard-request-error-handler
+		})
+)
