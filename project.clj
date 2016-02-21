@@ -13,7 +13,8 @@
                  [reagent "0.6.0-alpha"]
                  [datascript "0.15.0"]
                  [posh "0.3.3.1"]
-                 [com.cognitect/transit-cljs "0.8.237"]]
+                 [com.cognitect/transit-cljs "0.8.237"]
+                 [cljs-ajax "0.5.3"]]
   
   :plugins [[lein-figwheel "0.5.0-6"]
             [lein-cljsbuild "1.1.2" :exclusions [[org.clojure/clojure]]]]
