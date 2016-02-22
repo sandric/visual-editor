@@ -264,7 +264,7 @@
 
 (defn get-keyboard-from-server []
 
-	(GET "http://localhost:8080/api/yi" {
+	(GET "http://localhost:3000/keyboard/show" {
 		:response-format :raw 
 		:handler on-get-keyboard-request-handler 
 		:error-handler on-get-keyboard-request-error-handler
@@ -277,12 +277,12 @@
 )
 
 (defn on-post-keyboard-request-error-handler [{:keys [status status-text]}]
-  (println (str "Error while posting keyboard: " status " " status-text))
+	(println (str "Error while posting keyboard: " status " " status-text))
 )
 
 (defn post-keyboard-to-server []
 
-	(POST "http://localhost:8080/api/yipost" {
+	(POST "http://localhost:3000/keyboard/update" {
 		:params {	:user "Some fkn user"
                  	:keyboardID "keyboardID"
                  	:keyboard (convert-keyboard-to-edn) }
