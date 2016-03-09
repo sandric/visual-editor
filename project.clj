@@ -23,6 +23,7 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
+
   :cljsbuild {:builds
               [{:id "dev"
                 :source-paths ["src"]
@@ -40,6 +41,8 @@
                ;; lein cljsbuild once min
                {:id "min"
                 :source-paths ["src"]
+                :omit-source true
+                :aot :all
                 :compiler {:output-to "resources/public/js/compiled/yizhackclj.js"
                            :main yizhackclj.core
                            :optimizations :advanced

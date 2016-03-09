@@ -5,6 +5,8 @@
   			[cognitect.transit :as t]))
 
 
+(def selected-keyboard-style (r/atom "visual"))
+
 
 (def hovered-virtual-id (r/atom 0))
 (def selected-virtual-id (r/atom 0))
@@ -182,6 +184,17 @@
 			[:div.control 
 				[:button 
 					{
+						:on-click #(reset! selected-keyboard-style "visual")
+					}
+					"Switch to visual"]
+				[:button 
+					{
+						:on-click #(reset! selected-keyboard-style "textual")
+					}
+					"Switch to textual"]
+
+				[:button 
+					{
 						:on-click #(db/populate-empty-layout)
 					}
 					"new EMPTY"]
@@ -190,18 +203,31 @@
 						:on-click #(db/populate-qwerty-layout)
 					}
 					"new QWERTY"]
-				"My Keyboard"
 			]
 
-			[:div.thumbails
+			[:div.visual
+				{
+					:class (when (= @selected-keyboard-style "visual") "selected")
+				}
+
+				[:div.thumbails
+					(for [layer-id layer-ids]
+						^{:key layer-id} [layer-thumb-view layer-id]
+					)
+				]
+				
 				(for [layer-id layer-ids]
-					^{:key layer-id} [layer-thumb-view layer-id]
+					^{:key layer-id} [layer-view layer-id]
 				)
 			]
-			
-			(for [layer-id layer-ids]
-				^{:key layer-id} [layer-view layer-id]
-			)
+
+			[:pre.textual
+				{
+					:class (when (= @selected-keyboard-style "textual") "selected")
+				}
+
+				(db/serialize-keyboard)
+			]
 		]
 	)
 )

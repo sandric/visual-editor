@@ -1,3 +1,11 @@
+.keyboard .visual, .keyboard .textual {
+	display: none;
+}
+
+.keyboard .visual.selected, .keyboard .textual.selected {
+	display: block;
+}
+
 .layer {
 	display: none;
 
@@ -39,13 +47,6 @@
 
 	font-family: 'Courier New', Courier, monospace;
 }
-
-/*
-.button.thumb:hover {
-	background-color: lavender;
-	cursor: pointer;
-}
-*/
 
 .button.selected {
 	background-color: aquamarine;
