@@ -43,10 +43,10 @@
                 :source-paths ["src"]
                 :omit-source true
                 :aot :all
-                :compiler {:output-to "resources/public/js/compiled/yizhackclj.js"
+                :compiler {:output-to "resources/public/js/compiled/yizhackclj-min.js"
                            :main yizhackclj.core
                            :optimizations :advanced
-                           :pretty-print false}}]}
+                           :pretty-print true}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default

@@ -1,11 +1,3 @@
-.keyboard .visual, .keyboard .textual {
-	display: none;
-}
-
-.keyboard .visual.selected, .keyboard .textual.selected {
-	display: block;
-}
-
 .layer {
 	display: none;
 

@@ -8,7 +8,10 @@
   ((:tempids (d/transact! conn [(merge varmap {:db/id -1})])) -1))
 
 
-(def tempid (let [n (atom 0)] (fn [] (swap! n dec))))
+(def tempid (atom 0))
+(defn next-tempid []
+	(swap! tempid dec)
+)
 
 
 (def virtual-layer-id (atom 0))
@@ -64,7 +67,7 @@
 		    	conn
 					[
 					    {
-					    	:db/id (tempid)
+					    	:db/id (next-tempid)
 					    	:button/row (nth button 2)
 					    	:button/column (nth button 3)
 					       	:button/value (nth button 1)
@@ -121,6 +124,24 @@
 
 
 
+(defn remove-keyboard []
+	(let [layers-ids	@(p/q conn '[:find [?layer-id ...] 
+										:where [?layer-id :layer/name]
+									])]
+
+		(reset! tempid 0)
+
+		(reset! virtual-layer-id 0)
+
+		(doseq [layer-id layers-ids]
+			(remove-layer! conn layer-id nil)
+		)
+	)
+)
+
+
+
+
 
 
 (defn generate-button-datom [row column value layer]
@@ -128,7 +149,7 @@
     	conn
 			[
 			    {
-			    	:db/id (tempid)
+			    	:db/id (next-tempid)
 			    	:button/row row
 			    	:button/column column
 			       	:button/value value				       	
@@ -199,7 +220,7 @@
 										:where [?layer-id :layer/name]
 									])]
 
-		(map convert-layer-to-edn layers-ids)
+		{:layers (map convert-layer-to-edn layers-ids)}
 	)
 )
 
@@ -227,7 +248,6 @@
 (defn ^:export serialize-keyboard []
 	(to-json (convert-keyboard-to-edn))
 )
-
 
 
 

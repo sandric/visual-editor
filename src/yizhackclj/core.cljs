@@ -10,9 +10,6 @@
 (println "Edits to this text should show up in your developer console.")
 
 
-
-;(db/populate! conn)
-
 ;(db/populate-fixture-keyboard)
 
 (p/posh! conn)

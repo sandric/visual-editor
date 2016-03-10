@@ -5,6 +5,12 @@
   			[cognitect.transit :as t]))
 
 
+(def serialized-keyboard (r/atom ""))
+
+
+(def edit-mode (r/atom false))
+
+
 (def selected-keyboard-style (r/atom "visual"))
 
 
@@ -53,11 +59,11 @@
 							:top  (* (dec row) 55)
 						}
 
-						:on-click #(reset! selected-hovered-id button-id)
+						:on-click #(when @edit-mode (reset! selected-hovered-id button-id))
 
-						:on-mouse-over #(reset! hovered true)
+						:on-mouse-over #(when @edit-mode(reset! hovered true))
 
-						:on-mouse-out  #(reset! hovered false)
+						:on-mouse-out  #(when @edit-mode (reset! hovered false))
 
 					}
 					
@@ -101,6 +107,8 @@
 
 (defn layer-view [layer-id]
 
+	(fn []
+
 	(let [layer 		@(p/pull conn '[*] layer-id)
 		  virtual-id 	(:layer/virtual-id layer)
 		  name    		(:layer/name layer)
@@ -111,6 +119,7 @@
 		  									[?button :layer ?layer-id]  
 		  							] 
 		  							layer-id)]
+		
 		[:div.layer 
 			{
 				:class (when (= @selected-virtual-id virtual-id) "selected")
@@ -118,21 +127,25 @@
 
 			[:div.control
 
-				[:button 
-					{
-						:on-click #(db/remove-layer! conn layer-id virtual-id)
-					}
-					"remove"]
-				[:button 
-					{
-						:on-click #(db/clone-layer! conn layer-id name)
-					}
-					"clone"]
-				[:button 
-					{
-						:on-click #(doseq [button-id buttons-ids] (p/transact! conn [[:db/add button-id :button/value ""]]))
-					}
-					"clear"]
+				(when @edit-mode
+					[:button 
+						{
+							:on-click #(db/remove-layer! conn layer-id virtual-id)
+						}
+						"remove"])
+				(when @edit-mode
+					[:button 
+						{
+							:on-click #(db/clone-layer! conn layer-id name)
+						}
+						"clone"])
+				(when @edit-mode
+					[:button 
+						{
+							:on-click #(doseq [button-id buttons-ids] (p/transact! conn [[:db/add button-id :button/value ""]]))
+						}
+						"clear"])
+
 				(str "ID: " virtual-id " Name: " name)
 			]
 
@@ -142,6 +155,7 @@
 				)
 			]
 		]
+	)
 	)
 )
 
@@ -177,58 +191,93 @@
 	)
 )
 
+
+(defn textual-input [value]
+	[:input 
+		{
+			:value @value
+			:on-change (fn [e]
+				(reset! value (.-target.value e))
+        	)
+		}
+	]
+)
+
+
 (defn keyboard-view []
 
+	(fn []
+
 	(let [layer-ids @(p/q conn '[:find [?layer-id ...] :where [?layer-id :layer/name]])]
-		[:div.keyboard
-			[:div.control 
-				[:button 
-					{
-						:on-click #(reset! selected-keyboard-style "visual")
-					}
-					"Switch to visual"]
-				[:button 
-					{
-						:on-click #(reset! selected-keyboard-style "textual")
-					}
-					"Switch to textual"]
+			
+			[:div.keyboard
+				[:div.control 
+					[:button 
+						{
+							:on-click #(reset! edit-mode false)
+						}
+						"Switch to viewing mode"]
+					[:button 
+						{
+							:on-click #(reset! edit-mode true)
+						}
+						"Switch to editing mode"]
+					[:button 
+						{
+							:on-click (fn []
+								
+								(db/remove-keyboard)
 
-				[:button 
-					{
-						:on-click #(db/populate-empty-layout)
-					}
-					"new EMPTY"]
-				[:button 
-					{
-						:on-click #(db/populate-qwerty-layout)
-					}
-					"new QWERTY"]
-			]
+								(db/deserialize-keyboard @serialized-keyboard)
 
-			[:div.visual
-				{
-					:class (when (= @selected-keyboard-style "visual") "selected")
-				}
+								(reset! selected-keyboard-style "visual")
+							)
+						}
+						"Switch to visual"]
+					[:button 
+						{
+							:on-click (fn []
+								(reset! serialized-keyboard (db/serialize-keyboard))
+								(reset! selected-keyboard-style "textual")
+							)
+						}
+						"Switch to textual"]
 
-				[:div.thumbails
-					(for [layer-id layer-ids]
-						^{:key layer-id} [layer-thumb-view layer-id]
-					)
+					(when @edit-mode
+						[:button 
+							{
+								:on-click #(db/populate-empty-layout)
+							}
+							"new EMPTY"])
+					(when @edit-mode
+						[:button 
+							{
+								:on-click #(db/populate-qwerty-layout)
+							}
+							"new QWERTY"])
 				]
-				
-				(for [layer-id layer-ids]
-					^{:key layer-id} [layer-view layer-id]
+
+				(if (= @selected-keyboard-style "visual")
+					[:div.visual
+						[:div.thumbails
+							(for [layer-id layer-ids]
+								^{:key layer-id} [layer-thumb-view layer-id]
+							)
+						]
+						
+						(for[layer-id layer-ids]
+							^{:key layer-id} [layer-view layer-id]
+						)
+					]
+					[:div.textual
+						(if @edit-mode
+							(textual-input serialized-keyboard)
+							[:pre @serialized-keyboard]
+						)
+					]
 				)
 			]
-
-			[:pre.textual
-				{
-					:class (when (= @selected-keyboard-style "textual") "selected")
-				}
-
-				(db/serialize-keyboard)
-			]
-		]
+		)
 	)
 )
 
