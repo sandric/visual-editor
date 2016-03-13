@@ -2,13 +2,11 @@
   (:require [reagent.core :as r]
   			[posh.core :as p]
   			[yizhackclj.db :as db :refer [conn]]
-  			[cognitect.transit :as t]))
+  			[cognitect.transit :as t]
+  			[dommy.core :as dommy :refer-macros [sel sel1]]))
 
 
-(def serialized-keyboard (r/atom ""))
-
-
-(def edit-mode (r/atom false))
+(def edit-mode (r/atom true))
 
 
 (def selected-keyboard-style (r/atom "visual"))
@@ -192,92 +190,87 @@
 )
 
 
-(defn textual-input [value]
-	[:input 
-		{
-			:value @value
-			:on-change (fn [e]
-				(reset! value (.-target.value e))
-        	)
-		}
-	]
-)
-
-
 (defn keyboard-view []
-
-	(fn []
 
 	(let [layer-ids @(p/q conn '[:find [?layer-id ...] :where [?layer-id :layer/name]])]
 			
-			[:div.keyboard
-				[:div.control 
-					[:button 
-						{
-							:on-click #(reset! edit-mode false)
-						}
-						"Switch to viewing mode"]
-					[:button 
-						{
-							:on-click #(reset! edit-mode true)
-						}
-						"Switch to editing mode"]
-					[:button 
-						{
-							:on-click (fn []
-								
-								(db/remove-keyboard)
+		[:div.keyboard
+			[:div.control 
+				[:button 
+					{
+						:on-click (fn [] 
+							(reset! edit-mode false)
+							(.setOption js/editor "readOnly" true)
+						)
+					}
+					"Switch to viewing mode"]
+				[:button 
+					{
+						:on-click (fn []
+							(reset! edit-mode true)
+							(.setOption js/editor "readOnly" false)
+						)
+					}
+					"Switch to editing mode"]
+				[:button 
+					{
+						:on-click (fn []
+							
+							(db/remove-keyboard)
 
-								(db/deserialize-keyboard @serialized-keyboard)
+							(db/deserialize-keyboard (.getValue js/editor))
 
-								(reset! selected-keyboard-style "visual")
-							)
-						}
-						"Switch to visual"]
+
+							(dommy/remove-class! (sel1 :#text) :active)
+
+							(reset! selected-keyboard-style "visual")
+						)
+					}
+					"Switch to visual"]
+				[:button 
+					{
+						:on-click (fn []
+
+							(.setValue js/editor (db/serialize-keyboard))
+
+							
+							(dommy/add-class! (sel1 :#text) :active)
+
+							(reset! selected-keyboard-style "textual")
+						)
+					}
+					"Switch to textual"]
+
+				(when @edit-mode
 					[:button 
 						{
-							:on-click (fn []
-								(reset! serialized-keyboard (db/serialize-keyboard))
-								(reset! selected-keyboard-style "textual")
-							)
+							:on-click #(db/populate-empty-layout)
 						}
-						"Switch to textual"]
+						"new EMPTY"])
+				(when @edit-mode
+					[:button 
+						{
+							:on-click #(db/populate-qwerty-layout)
+						}
+						"new QWERTY"])
+			]
 
-					(when @edit-mode
-						[:button 
-							{
-								:on-click #(db/populate-empty-layout)
-							}
-							"new EMPTY"])
-					(when @edit-mode
-						[:button 
-							{
-								:on-click #(db/populate-qwerty-layout)
-							}
-							"new QWERTY"])
+			[:div.visual
+				{
+					:class (when (= @selected-keyboard-style "visual") "active")
+				}
+				
+				[:div.thumbails
+					(for [layer-id layer-ids]
+						^{:key layer-id} [layer-thumb-view layer-id]
+					)
 				]
-
-				(if (= @selected-keyboard-style "visual")
-					[:div.visual
-						[:div.thumbails
-							(for [layer-id layer-ids]
-								^{:key layer-id} [layer-thumb-view layer-id]
-							)
-						]
-						
-						(for[layer-id layer-ids]
-							^{:key layer-id} [layer-view layer-id]
-						)
-					]
-					[:div.textual
-						(if @edit-mode
-							(textual-input serialized-keyboard)
-							[:pre @serialized-keyboard]
-						)
-					]
+				
+				(for[layer-id layer-ids]
+					^{:key layer-id} [layer-view layer-id]
 				)
 			]
-		)
+		]
 	)
 )
 

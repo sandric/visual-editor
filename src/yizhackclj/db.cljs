@@ -29,7 +29,7 @@
 
 
 (defn to-json [keyboard]
-  	(.stringify js/JSON (clj->js keyboard))
+  	(.stringify js/JSON (clj->js keyboard) nil 2)
 )
 
 (defn parse-json [json]
