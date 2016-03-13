@@ -7,14 +7,10 @@
 
 (enable-console-print!)
 
-(println "Edits to this text should show up in your developer console.")
 
+;(view/initialize)
 
 ;(db/populate-fixture-keyboard)
-
-(p/posh! conn)
-
-(view/initialize)
 
 
 (defn on-js-reload []

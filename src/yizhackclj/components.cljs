@@ -274,6 +274,8 @@
 	)
 )
 
-(defn initialize []
+(defn ^:export initialize [keyboard-data]
+	(db/deserialize-keyboard keyboard-data)
+	(p/posh! conn)
 	(r/render-component [keyboard-view] (.getElementById js/document "app"))
 )
