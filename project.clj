@@ -47,6 +47,7 @@
                 :compiler {:output-to "resources/public/js/compiled/yizhackclj-min.js"
                            :main yizhackclj.core
                            :optimizations :advanced
+                           :externs ["externs.js"]
                            :pretty-print true}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
