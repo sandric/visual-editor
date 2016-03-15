@@ -22,13 +22,9 @@
 	(cond
 		selected "aquamarine" 
 		hovered  "lavender" 
-		(= value "ALT") "red"
-		(= value "CTRL") "blue"
-		(= value "BKSP") "yellow"
-		(= value "SPC") "black"
-		(= value "ENTR") "magenta"
-		(= value "TAB") "white"
 		(.startsWith value "LN_") "greenyellow"
+		(> (count value) 1) "grey"
+		
 		:else "gainsboro"
 	)
 )
@@ -95,10 +91,23 @@
 
 
 
+(defn layer-name-input [layer-id name]
+	[:input 
+		{
+			:type "text" 
+			:maxLength 8
+			:value name
+            
+            :on-change (fn [e]
+            	(p/transact! conn [[:db/add layer-id :layer/name (-> e .-target .-value)]])
+            )
+		}
+	] 
+)
+
+
+
 (defn layer-view [layer-id]
-
-	(fn []
-
 	(let [layer 		@(p/pull conn '[*] layer-id)
 		  virtual-id 	(:layer/virtual-id layer)
 		  name    		(:layer/name layer)
@@ -136,7 +145,12 @@
 						}
 						"clear"])
 
-				(str "ID: " virtual-id " Name: " name)
+				(if @edit-mode
+					[:form
+						[layer-name-input layer-id name]
+					]
+					[:pre name]
+				)
 			]
 
 			[:div.layout
@@ -145,7 +159,6 @@
 				)
 			]
 		]
-	)
 	)
 )
 
@@ -298,72 +311,95 @@
 				)
 			]
 			[:div.edit
-
 				(when @selected-button-id
-					(let [button  @(p/pull conn '[*] @selected-button-id)
-					  	row       (:button/row button)
-					  	column    (:button/column button)
-					  	value     (:button/value button)]
 
-					  	[:form
-					  		[button-value-input @selected-button-id value]
-					  		[button-command-input @selected-button-id "Command:::"]
+					(if @edit-mode
 
-					  		[:select#layers_select 
-					  			{
-					  				:on-change (fn [e] 
-					  					(when (not= (-> e .-target .-value) 0)
-					  						(set! (.-value (sel1 :#control_select)) 0)
-					  						(p/transact! conn [[:db/add @selected-button-id :button/value (str "LN_" (-> e .-target .-value))]])
-					  					)
-					  				)
-					  			}  
+						(let [button  @(p/pull conn '[*] @selected-button-id)
+						  	row       (:button/row button)
+						  	column    (:button/column button)
+						  	value     (:button/value button)]
 
-					  			[:option {:value 0} "Select layer transition"] 
+						  	[:form
+						  		[button-value-input @selected-button-id value]
+						  		[button-command-input @selected-button-id "Command:::"]
 
-					  			(for [layer-id layer-ids]
-					  				(let [layer @(p/pull conn '[*] layer-id)
-										virtual-id 	(:layer/virtual-id layer)
-										name 		(:layer/name layer)]
+						  		[:select#layers_select 
+						  			{
+						  				:on-change (fn [e] 
+						  					(when (not= (-> e .-target .-value) 0)
+						  						(set! (.-value (sel1 :#control_select)) 0)
+						  						(p/transact! conn [[:db/add @selected-button-id :button/value (str "LN_" (-> e .-target .-value))]])
+						  					)
+						  				)
+						  			}  
 
-										[:option {:value virtual-id} name]  
+						  			[:option {:value 0} "Select layer transition"] 
+
+						  			(for [layer-id layer-ids]
+						  				(let [layer @(p/pull conn '[*] layer-id)
+											virtual-id 	(:layer/virtual-id layer)
+											name 		(:layer/name layer)]
+
+											[:option {:value virtual-id} name]  
+										)
 									)
-								)
+								]
+
+								[:select#control_select 
+						  			{
+						  				:on-change (fn [e] 
+						  					(when (not= (-> e .-target .-value) 0)
+						  						(set! (.-value (sel1 :#layers_select)) 0)
+						  						(p/transact! conn [[:db/add @selected-button-id :button/value (-> e .-target .-value)]])
+						  					)
+						  				)
+						  			}  
+
+						  			[:option {:value 0} "Select control button"] 
+
+						  			[:option {:value "LSHIFT"} "Left Shift"]
+						  			[:option {:value "RSHIFT"} "Right Shift"]
+
+						  			[:option {:value "LCTRL"} "Left Control"]
+						  			[:option {:value "RCTRL"} "Right Control"]
+
+						  			[:option {:value "LALT"} "Left Alt"] 
+						  			[:option {:value "RALT"} "Right Alt"]  
+
+						  			[:option {:value "SPC"} "Space"] 
+						  			[:option {:value "BKSPC"} "Backspace"]
+						  			[:option {:value "TAB"} "Tab"] 
+						  			[:option {:value "ENTR"} "Enter"]
+									[:option {:value "ESC"} "Escape"]
+
+									[:option {:value "UP"} "Arrow Up"]
+									[:option {:value "DOWN"} "Arrow Down"]
+									[:option {:value "LEFT"} "Arrow Left"]
+									[:option {:value "RIGHT"} "Arrow Right"]					  			    
+								]
+
+								[:pre row]
+								[:pre column]
+						  	]
+						)
+					
+						(let [button  @(p/pull conn '[*] @selected-button-id)
+						  	row       (:button/row button)
+						  	column    (:button/column button)
+						  	value     (:button/value button)
+						  	command   (:button/command button)]
+
+						  	[:div
+
+								[:pre value]
+								[:pre command]
+							  	[:pre row]
+								[:pre column]
+
+								[:pre (first @(p/q conn '[ :find [?layer-name] :where [?layer :layer/virtual-id 2][?layer :layer/name ?layer-name]]))]
 							]
-
-							[:select#control_select 
-					  			{
-					  				:on-change (fn [e] 
-					  					(when (not= (-> e .-target .-value) 0)
-					  						(set! (.-value (sel1 :#layers_select)) 0)
-					  						(p/transact! conn [[:db/add @selected-button-id :button/value (-> e .-target .-value)]])
-					  					)
-					  				)
-					  			}  
-
-					  			[:option {:value 0} "Select control button"] 
-
-					  			[:option {:value "LSHIFT"} "Left Shift"]
-					  			[:option {:value "RSHIFT"} "Right Shift"]
-
-					  			[:option {:value "LCTRL"} "Left Control"]
-					  			[:option {:value "RCTRL"} "Right Control"]
-
-					  			[:option {:value "LALT"} "Left Alt"] 
-					  			[:option {:value "RALT"} "Right Alt"]  
-
-					  			[:option {:value "SPC"} "Space"] 
-					  			[:option {:value "BKSPC"} "Backspace"]
-					  			[:option {:value "TAB"} "Tab"] 
-					  			[:option {:value "ENTR"} "Enter"]
-								[:option {:value "ESC"} "Escape"]
-
-								[:option {:value "UP"} "Arrow Up"]
-								[:option {:value "DOWN"} "Arrow Down"]
-								[:option {:value "LEFT"} "Arrow Left"]
-								[:option {:value "RIGHT"} "Arrow Right"]					  			    
-							]
-					  	]
+						)
 					)
 				)
 			]
