@@ -8,9 +8,7 @@
 (enable-console-print!)
 
 
-;(view/initialize)
-
-;(db/populate-fixture-keyboard)
+;(view/initialize db/fixture-keyboard)
 
 
 (defn on-js-reload []

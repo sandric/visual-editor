@@ -15,8 +15,8 @@
 (def hovered-virtual-id (r/atom 0))
 (def selected-virtual-id (r/atom 0))
 
-(def hovered-button-id (r/atom 0))
-(def selected-hovered-id (r/atom 0))
+(def hovered-button-id (r/atom nil))
+(def selected-button-id (r/atom nil))
 
 (defn get-button-color [value selected hovered]
 	(cond
@@ -49,7 +49,7 @@
 				[:div.button 
 					{
 						:style {
-							:background-color (get-button-color value (= @selected-hovered-id button-id) @hovered)
+							:background-color (get-button-color value (= @selected-button-id button-id) @hovered)
 
 							:opacity (if @hovered 0.5 1)
 
@@ -57,7 +57,7 @@
 							:top  (* (dec row) 55)
 						}
 
-						:on-click #(when @edit-mode (reset! selected-hovered-id button-id))
+						:on-click (fn [e] (when @edit-mode (reset! selected-button-id button-id) (.stopPropagation e)))
 
 						:on-mouse-over #(when @edit-mode(reset! hovered true))
 
@@ -65,15 +65,7 @@
 
 					}
 					
-					[:input 
-						{
-							:type "text" 
-							:maxLength 4
-							:value value 
-			                
-			                :on-change #(p/transact! conn [[:db/add button-id :button/value (-> % .-target .-value)]])
-						}
-					] 
+					[:pre value] 
 				]
 			)
 		)
@@ -190,6 +182,39 @@
 )
 
 
+(defn button-value-input [button-id value]
+	[:input 
+		{
+			:type "text" 
+			:maxLength 4
+			:value value 
+            
+            :on-change (fn [e] 
+            	(set! (.-value (sel1 :#layers_select)) 0)
+            	(set! (.-value (sel1 :#control_select)) 0)
+            	(p/transact! conn [[:db/add button-id :button/value (-> e .-target .-value)]])
+            )
+		}
+	] 
+)
+
+(defn button-command-input [button-id command]
+	[:input 
+		{
+			:type "text" 
+			:maxLength 8
+			:value command 
+            
+            :on-change (fn [e]
+            	(set! (.-value (sel1 :#layers_select)) 0)
+            	(set! (.-value (sel1 :#control_select)) 0)
+            	(p/transact! conn [[:db/add button-id :button/command (-> e .-target .-value)]])
+            )
+		}
+	] 
+)
+
+
 (defn keyboard-view []
 
 	(let [layer-ids @(p/q conn '[:find [?layer-id ...] :where [?layer-id :layer/name]])]
@@ -258,6 +283,8 @@
 			[:div.visual
 				{
 					:class (when (= @selected-keyboard-style "visual") "active")
+
+					:on-click #(reset! selected-button-id nil)
 				}
 				
 				[:div.thumbails
@@ -268,6 +295,76 @@
 				
 				(for[layer-id layer-ids]
 					^{:key layer-id} [layer-view layer-id]
+				)
+			]
+			[:div.edit
+
+				(when @selected-button-id
+					(let [button  @(p/pull conn '[*] @selected-button-id)
+					  	row       (:button/row button)
+					  	column    (:button/column button)
+					  	value     (:button/value button)]
+
+					  	[:form
+					  		[button-value-input @selected-button-id value]
+					  		[button-command-input @selected-button-id "Command:::"]
+
+					  		[:select#layers_select 
+					  			{
+					  				:on-change (fn [e] 
+					  					(when (not= (-> e .-target .-value) 0)
+					  						(set! (.-value (sel1 :#control_select)) 0)
+					  						(p/transact! conn [[:db/add @selected-button-id :button/value (str "LN_" (-> e .-target .-value))]])
+					  					)
+					  				)
+					  			}  
+
+					  			[:option {:value 0} "Select layer transition"] 
+
+					  			(for [layer-id layer-ids]
+					  				(let [layer @(p/pull conn '[*] layer-id)
+										virtual-id 	(:layer/virtual-id layer)
+										name 		(:layer/name layer)]
+
+										[:option {:value virtual-id} name]  
+									)
+								)
+							]
+
+							[:select#control_select 
+					  			{
+					  				:on-change (fn [e] 
+					  					(when (not= (-> e .-target .-value) 0)
+					  						(set! (.-value (sel1 :#layers_select)) 0)
+					  						(p/transact! conn [[:db/add @selected-button-id :button/value (-> e .-target .-value)]])
+					  					)
+					  				)
+					  			}  
+
+					  			[:option {:value 0} "Select control button"] 
+
+					  			[:option {:value "LSHIFT"} "Left Shift"]
+					  			[:option {:value "RSHIFT"} "Right Shift"]
+
+					  			[:option {:value "LCTRL"} "Left Control"]
+					  			[:option {:value "RCTRL"} "Right Control"]
+
+					  			[:option {:value "LALT"} "Left Alt"] 
+					  			[:option {:value "RALT"} "Right Alt"]  
+
+					  			[:option {:value "SPC"} "Space"] 
+					  			[:option {:value "BKSPC"} "Backspace"]
+					  			[:option {:value "TAB"} "Tab"] 
+					  			[:option {:value "ENTR"} "Enter"]
+								[:option {:value "ESC"} "Escape"]
+
+								[:option {:value "UP"} "Arrow Up"]
+								[:option {:value "DOWN"} "Arrow Down"]
+								[:option {:value "LEFT"} "Arrow Left"]
+								[:option {:value "RIGHT"} "Arrow Right"]					  			    
+							]
+					  	]
+					)
 				)
 			]
 		]
