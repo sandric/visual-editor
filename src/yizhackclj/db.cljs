@@ -48,6 +48,17 @@
 
 
 
+(defn layer-by-virtual-id [virtual-id]
+	(let [layer-id  (first @(p/q conn '[ :find [?layer-id] 
+										 :in $ ?virtual-id 
+										 :where 
+										 	[?layer-id :layer/virtual-id ?virtual-id]
+										 ] 
+										virtual-id))]
+		@(p/pull conn '[*] layer-id)
+	)
+)
+
 
 (defn clone-layer! [conn layer-id layer-name]
 	(let [  buttons @(p/q conn '[ 	:find ?button ?value ?row ?column
@@ -160,9 +171,9 @@
 )
 
 
-(defn generate-layer-datom [name virtual-id buttons]
+(defn generate-layer-datom [name virtual-id color buttons]
 
-	(let [layer (new-entity! conn {:layer/virtual-id virtual-id :layer/name name})]
+	(let [layer (new-entity! conn {:layer/virtual-id virtual-id :layer/name name :layer/color color})]
 
 		(doseq [button buttons]
 			(generate-button-datom (:row button) (:column button) (:value button) layer)
@@ -179,6 +190,7 @@
 		(generate-layer-datom 
 			(:name layer)
 			(:id layer)
+			(:color layer)
 			(:buttons layer))
 	)
 )
@@ -201,6 +213,7 @@
 	(let   [layer     	@(p/pull conn '[*] layer-id)
 		  	name    	(:layer/name layer)
 		  	vid 		(:layer/virtual-id layer)
+		  	color 		(:layer/color layer)
 			buttons-ids (sort @(p/q conn '[ 	:find [?button ...]
 		  									:in $ ?layer-id 
 		  									:where 
@@ -210,7 +223,7 @@
 		  								layer-id))]
 
 
-		{:name name :id vid :buttons (map convert-button-to-edn buttons-ids)}
+		{:name name :id vid :color color :buttons (map convert-button-to-edn buttons-ids)}
 	)
 )
 
@@ -232,7 +245,8 @@
 	(let [parsed-layer (parse-json json)]
 		(generate-layer-datom 
 			(:name parsed-layer)
-			(inc-layer-id) 
+			(inc-layer-id)
+			(:color parsed-layer) 
 			(:buttons parsed-layer))
 	)
 )
@@ -336,7 +350,7 @@
 (def qwerty-layer (str "{\"name\":\"QWERTY Layer\",\"buttons\":" qwerty-layout "}"))
 
 
-(def fixture-keyboard (str "{\"layers\":[{\"name\":\"Layer 1\",\"id\":1,\"buttons\":" qwerty-layout "}, {\"name\":\"Layer 2\",\"id\":2,\"buttons\":" empty-layout "}]}"))
+(def fixture-keyboard (str "{\"layers\":[{\"name\":\"Layer 1\",\"id\":1,\"color\":\"#ff0000\",\"buttons\":" qwerty-layout "}, {\"name\":\"Layer 2\",\"id\":2,\"color\":\"#00ff00\",\"buttons\":" empty-layout "}]}"))
 
 
 (defn populate-fixture-keyboard []

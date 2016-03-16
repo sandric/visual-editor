@@ -18,11 +18,19 @@
 (def hovered-button-id (r/atom nil))
 (def selected-button-id (r/atom nil))
 
+(defn color-for-functor-button [functor]
+	(let [virtual-id 	(db/parse-layer functor)
+		  layer 		(db/layer-by-virtual-id virtual-id)]
+
+		  (:layer/color layer)
+	)
+)
+
 (defn get-button-color [value selected hovered]
 	(cond
 		selected "aquamarine" 
 		hovered  "lavender" 
-		(.startsWith value "LN_") "greenyellow"
+		(.startsWith value "LN_") (color-for-functor-button value)
 		(> (count value) 1) "grey"
 		
 		:else "gainsboro"
@@ -105,12 +113,27 @@
 	] 
 )
 
+(defn layer-color-input [layer-id color]
+	[:input 
+		{
+			:type "text" 
+			:maxLength 8
+			:value color
+            
+            :on-change (fn [e]
+            	(p/transact! conn [[:db/add layer-id :layer/color (-> e .-target .-value)]])
+            )
+		}
+	] 
+)
+
 
 
 (defn layer-view [layer-id]
 	(let [layer 		@(p/pull conn '[*] layer-id)
 		  virtual-id 	(:layer/virtual-id layer)
 		  name    		(:layer/name layer)
+		  color    		(:layer/color layer)
 		  buttons-ids 	@(p/q conn '[ 	:find [?button ...]
 		  								:in $ ?layer-id 
 		  								:where 
@@ -122,6 +145,9 @@
 		[:div.layer 
 			{
 				:class (when (= @selected-virtual-id virtual-id) "selected")
+				:style {
+					:background-color color 
+				}
 			}
 
 			[:div.control
@@ -148,6 +174,7 @@
 				(if @edit-mode
 					[:form
 						[layer-name-input layer-id name]
+						[layer-color-input layer-id color]
 					]
 					[:pre name]
 				)
@@ -168,7 +195,7 @@
 	(let [layer 		@(p/pull conn '[*] layer-id)
 		  virtual-id 	(:layer/virtual-id layer)
 		  name    		(:layer/name layer)
-
+		  color    		(:layer/color layer)
 		  buttons-ids 	@(p/q conn '[ 	:find [?button ...]
 		  								:in $ ?layer-id 
 		  								:where 
@@ -179,6 +206,10 @@
 		[:div.layer.thumb 
 			{
 				:class (str (when (= @selected-virtual-id virtual-id) "selected") (when (= @hovered-virtual-id virtual-id) " hovered"))
+
+				:style {
+					:background-color color 
+				}
 
 				:on-click #(reset! selected-virtual-id virtual-id)
 			}
@@ -310,6 +341,7 @@
 					^{:key layer-id} [layer-view layer-id]
 				)
 			]
+			
 			[:div.edit
 				(when @selected-button-id
 
