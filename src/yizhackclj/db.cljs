@@ -9,16 +9,18 @@
   ((:tempids (d/transact! conn [(merge varmap {:db/id -1})])) -1))
 
 
-(def tempid (atom 0))
-(defn next-tempid []
-	(swap! tempid dec)
-)
+(def id (atom 0))
+
+(defn id-inc [] (swap! id inc))
+(defn id-dec [] (swap! id dec))
 
 
-(def virtual-layer-id (atom 0))
+(def vid (atom 0))
 
-(defn inc-layer-id [] (swap! virtual-layer-id inc) @virtual-layer-id)
-(defn dec-layer-id [] (swap! virtual-layer-id dec) @virtual-layer-id)
+(defn vid-inc [] (swap! vid inc))
+(defn vid-dec [] (swap! vid dec))
+
+
 
 
 (defn parse-layer [value]
@@ -39,6 +41,8 @@
 
 
 
+
+
 (def schema 
 	{
 		:layer/button {:db/cardinality :db.cardinality/many}
@@ -49,13 +53,13 @@
 
 
 
-(defn layer-by-virtual-id [virtual-id]
+(defn layer-by-vid [vid]
 	(let [layer-id  (first @(p/q conn '[ :find [?layer-id] 
-										 :in $ ?virtual-id 
+										 :in $ ?vid 
 										 :where 
-										 	[?layer-id :layer/virtual-id ?virtual-id]
+										 	[?layer-id :layer/vid ?vid]
 										 ] 
-										virtual-id))]
+										vid))]
 		@(p/pull conn '[*] layer-id)
 	)
 )
@@ -71,7 +75,7 @@
 										[?button :button/column ?column] 
 									]
 									layer-id)
-		 	layer (new-entity! conn {:layer/virtual-id (inc-layer-id) :layer/name (str layer-name "'s clone")})]
+		 	layer (new-entity! conn {:layer/vid (vid-inc) :layer/name (str layer-name "'s clone")})]
 
 		(doseq [button buttons] 
 
@@ -79,7 +83,7 @@
 		    	conn
 					[
 					    {
-					    	:db/id (next-tempid)
+					    	:db/id (id-dec)
 					    	:button/row (nth button 2)
 					    	:button/column (nth button 3)
 					       	:button/value (nth button 1)
@@ -90,13 +94,13 @@
 )
 
 
-(defn remove-layer! [conn layer-id layer-virtual-id]
-	(let [  layers  			@(p/q conn '[ 	:find ?layer ?later-virtual-id
+(defn remove-layer! [conn layer-id layer-vid]
+	(let [  layers  			@(p/q conn '[ 	:find ?layer ?later-vid
 												:in $ ?layer-id
 												:where 
-													[?layer-id 	:layer/virtual-id ?virtual-id]
-													[?layer 	:layer/virtual-id ?later-virtual-id] 
-												[(> ?later-virtual-id ?virtual-id)]
+													[?layer-id 	:layer/vid ?vid]
+													[?layer 	:layer/vid ?later-vid] 
+												[(> ?later-vid ?vid)]
 											]
 											layer-id)
 
@@ -105,7 +109,7 @@
 												:where 
 													[?button :button/value ?val] 
 												] 
-												(str "LN_" layer-virtual-id))]
+												(str "LN_" layer-vid))]
 
 
 		(doseq [button-id button-references]
@@ -114,20 +118,20 @@
 
 
 		(p/transact! conn [[:db.fn/retractEntity layer-id]])
-		(dec-layer-id)
+		(vid-dec)
 
-		(doseq [[layer-id later-virtual-id] layers]
-			(p/transact! conn [[:db/add layer-id :layer/virtual-id (dec later-virtual-id)]])
+		(doseq [[layer-id later-vid] layers]
+			(p/transact! conn [[:db/add layer-id :layer/vid (dec later-vid)]])
 
 			(let [button-references 	@(p/q conn '[ 	:find [?button ...] 
 												:in $ ?val 
 												:where 
 													[?button :button/value ?val] 
 												] 
-												(str "LN_" later-virtual-id))]
+												(str "LN_" later-vid))]
 
 				(doseq [button-id button-references]
-					(p/transact! conn [[:db/add button-id :button/value (str "LN_" (dec later-virtual-id))]])
+					(p/transact! conn [[:db/add button-id :button/value (str "LN_" (dec later-vid))]])
 				)
 			)
 		)
@@ -141,9 +145,9 @@
 										:where [?layer-id :layer/name]
 									])]
 
-		(reset! tempid 0)
+		(reset! id 0)
 
-		(reset! virtual-layer-id 0)
+		(reset! vid 0)
 
 		(doseq [layer-id layers-ids]
 			(remove-layer! conn layer-id nil)
@@ -161,7 +165,7 @@
     	conn
 			[
 			    {
-			    	:db/id (next-tempid)
+			    	:db/id (id-dec)
 			    	:button/row row
 			    	:button/column column
 			       	:button/value value				       	
@@ -172,9 +176,9 @@
 )
 
 
-(defn generate-layer-datom [name virtual-id color buttons]
+(defn generate-layer-datom [name vid color buttons]
 
-	(let [layer (new-entity! conn {:layer/virtual-id virtual-id :layer/name name :layer/color color})]
+	(let [layer (new-entity! conn {:layer/vid vid :layer/name name :layer/color color})]
 
 		(doseq [button buttons]
 			(generate-button-datom (:row button) (:column button) (:value button) layer)
@@ -184,10 +188,10 @@
 
 
 (defn generate-keyboard-datom [keyboard]
-	(reset! virtual-layer-id 0)
+	(reset! vid 0)
 
 	(doseq [layer (:layers keyboard)]
-		(inc-layer-id)
+		(vid-inc)
 		(generate-layer-datom 
 			(:name layer)
 			(:id layer)
@@ -213,7 +217,7 @@
 (defn convert-layer-to-edn [layer-id]
 	(let   [layer     	@(p/pull conn '[*] layer-id)
 		  	name    	(:layer/name layer)
-		  	vid 		(:layer/virtual-id layer)
+		  	vid 		(:layer/vid layer)
 		  	color 		(:layer/color layer)
 			buttons-ids (sort @(p/q conn '[ 	:find [?button ...]
 		  									:in $ ?layer-id 
@@ -246,7 +250,7 @@
 	(let [parsed-layer (parse-json json)]
 		(generate-layer-datom 
 			(:name parsed-layer)
-			(inc-layer-id)
+			(vid-inc)
 			(:color parsed-layer) 
 			(:buttons parsed-layer))
 	)

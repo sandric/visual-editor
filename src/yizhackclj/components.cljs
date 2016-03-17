@@ -12,15 +12,15 @@
 (def selected-keyboard-style (r/atom "visual"))
 
 
-(def hovered-virtual-id (r/atom 0))
-(def selected-virtual-id (r/atom 0))
+(def hovered-vid (r/atom 0))
+(def selected-vid (r/atom 0))
 
 (def hovered-button-id (r/atom nil))
 (def selected-button-id (r/atom nil))
 
 (defn color-for-functor-button [functor]
-	(let [virtual-id 	(db/parse-layer functor)
-		  layer 		(db/layer-by-virtual-id virtual-id)]
+	(let [vid 		(db/parse-layer functor)
+		  layer 	(db/layer-by-vid vid)]
 
 		  (:layer/color layer)
 	)
@@ -48,7 +48,7 @@
 				  column    (:button/column button)
 				  value     (:button/value button)]
 
-				(when @hovered (reset! hovered-virtual-id (db/parse-layer value)))
+				(when @hovered (reset! hovered-vid (db/parse-layer value)))
 
 				[:div.button 
 					{
@@ -99,6 +99,8 @@
 
 
 
+
+
 (defn layer-name-input [layer-id name]
 	[:input 
 		{
@@ -131,7 +133,7 @@
 
 (defn layer-view [layer-id]
 	(let [layer 		@(p/pull conn '[*] layer-id)
-		  virtual-id 	(:layer/virtual-id layer)
+		  vid 			(:layer/vid layer)
 		  name    		(:layer/name layer)
 		  color    		(:layer/color layer)
 		  buttons-ids 	@(p/q conn '[ 	:find [?button ...]
@@ -144,7 +146,7 @@
 		
 		[:div.layer 
 			{
-				:class (when (= @selected-virtual-id virtual-id) "selected")
+				:class (when (= @selected-vid vid) "selected")
 				:style {
 					:background-color color 
 				}
@@ -155,7 +157,7 @@
 				(when @edit-mode
 					[:button 
 						{
-							:on-click #(db/remove-layer! conn layer-id virtual-id)
+							:on-click #(db/remove-layer! conn layer-id vid)
 						}
 						"remove"])
 				(when @edit-mode
@@ -193,7 +195,7 @@
 (defn layer-thumb-view [layer-id]
 
 	(let [layer 		@(p/pull conn '[*] layer-id)
-		  virtual-id 	(:layer/virtual-id layer)
+		  vid 			(:layer/vid layer)
 		  name    		(:layer/name layer)
 		  color    		(:layer/color layer)
 		  buttons-ids 	@(p/q conn '[ 	:find [?button ...]
@@ -205,16 +207,16 @@
 		  							layer-id)]
 		[:div.layer.thumb 
 			{
-				:class (str (when (= @selected-virtual-id virtual-id) "selected") (when (= @hovered-virtual-id virtual-id) " hovered"))
+				:class (str (when (= @selected-vid vid) "selected") (when (= @hovered-vid vid) " hovered"))
 
 				:style {
 					:background-color color 
 				}
 
-				:on-click #(reset! selected-virtual-id virtual-id)
+				:on-click #(reset! selected-vid vid)
 			}
 
-			[:div.control (str "ID: " virtual-id " Name: " name)]
+			[:div.control (str "ID: " vid " Name: " name)]
 
 			[:div.layout
 				(for [button-id buttons-ids]
@@ -224,40 +226,6 @@
 		]
 	)
 )
-
-
-(defn button-value-input [button-id value]
-	[:input 
-		{
-			:type "text" 
-			:maxLength 4
-			:value value 
-            
-            :on-change (fn [e] 
-            	(set! (.-value (sel1 :#layers_select)) 0)
-            	(set! (.-value (sel1 :#control_select)) 0)
-            	(p/transact! conn [[:db/add button-id :button/value (-> e .-target .-value)]])
-            )
-		}
-	] 
-)
-
-(defn button-command-input [button-id command]
-	[:input 
-		{
-			:type "text" 
-			:maxLength 8
-			:value command 
-            
-            :on-change (fn [e]
-            	(set! (.-value (sel1 :#layers_select)) 0)
-            	(set! (.-value (sel1 :#control_select)) 0)
-            	(p/transact! conn [[:db/add button-id :button/command (-> e .-target .-value)]])
-            )
-		}
-	] 
-)
-
 
 
 
@@ -297,192 +265,262 @@
 	)
 )
 
+
+
+
+
+(defn button-value-input [button-id value]
+	[:input 
+		{
+			:type "text" 
+			:maxLength 4
+			:value value 
+            
+            :on-change (fn [e] 
+            	(set! (.-value (sel1 :#layers_select)) 0)
+            	(set! (.-value (sel1 :#control_select)) 0)
+            	(p/transact! conn [[:db/add button-id :button/value (-> e .-target .-value)]])
+            )
+		}
+	] 
+)
+
+(defn button-command-input [button-id command]
+	[:input 
+		{
+			:type "text" 
+			:maxLength 8
+			:value command 
+            
+            :on-change (fn [e]
+            	(set! (.-value (sel1 :#layers_select)) 0)
+            	(set! (.-value (sel1 :#control_select)) 0)
+            	(p/transact! conn [[:db/add button-id :button/command (-> e .-target .-value)]])
+            )
+		}
+	] 
+)
+
+
+
+(defn button-functor-select [layer-ids]
+
+	[:select#layers_select 
+		{
+			:on-change (fn [e] 
+				(when (not= (-> e .-target .-value) 0)
+					(set! (.-value (sel1 :#control_select)) 0)
+					(p/transact! conn [[:db/add @selected-button-id :button/value (str "LN_" (-> e .-target .-value))]])
+				)
+			)
+		}  
+
+		[:option {:value 0} "Select layer transition"] 
+
+		(for [layer-id layer-ids]
+			(let [layer @(p/pull conn '[*] layer-id)
+				
+				  vid 		(:layer/vid layer)
+				  name 		(:layer/name layer)]
+
+				[:option {:value vid} name]  
+			)
+		)
+	]
+)
+
+
+(defn button-control-select [layer-ids]
+	
+	[:select#control_select 
+			{
+				:on-change (fn [e] 
+					(when (not= (-> e .-target .-value) 0)
+						(set! (.-value (sel1 :#layers_select)) 0)
+						(p/transact! conn [[:db/add @selected-button-id :button/value (-> e .-target .-value)]])
+					)
+				)
+			}  
+
+			[:option {:value 0} "Select control button"] 
+
+			[:option {:value "LSHIFT"} "Left Shift"]
+			[:option {:value "RSHIFT"} "Right Shift"]
+
+			[:option {:value "LCTRL"} "Left Control"]
+			[:option {:value "RCTRL"} "Right Control"]
+
+			[:option {:value "LALT"} "Left Alt"] 
+			[:option {:value "RALT"} "Right Alt"]  
+
+			[:option {:value "SPC"} "Space"] 
+			[:option {:value "BKSPC"} "Backspace"]
+			[:option {:value "TAB"} "Tab"] 
+			[:option {:value "ENTR"} "Enter"]
+		[:option {:value "ESC"} "Escape"]
+
+		[:option {:value "UP"} "Arrow Up"]
+		[:option {:value "DOWN"} "Arrow Down"]
+		[:option {:value "LEFT"} "Arrow Left"]
+		[:option {:value "RIGHT"} "Arrow Right"]					  			    
+	]
+)
+
+
+
+
+
+(defn control-area []
+
+	[:div.control 
+		[:button 
+			{
+				:on-click (fn [] 
+					(reset! edit-mode false)
+					(.setOption js/editor "readOnly" true)
+				)
+			}
+			"Switch to viewing mode"]
+		[:button 
+			{
+				:on-click (fn []
+					(reset! edit-mode true)
+					(.setOption js/editor "readOnly" false)
+				)
+			}
+			"Switch to editing mode"]
+		[:button 
+			{
+				:on-click (fn []
+					
+					(db/remove-keyboard)
+
+					(db/deserialize-keyboard (.getValue js/editor))
+
+
+					(dommy/remove-class! (sel1 :#text) :active)
+
+					(reset! selected-keyboard-style "visual")
+				)
+			}
+			"Switch to visual"]
+		[:button 
+			{
+				:on-click (fn []
+
+					(.setValue js/editor (db/serialize-keyboard))
+
+					
+					(dommy/add-class! (sel1 :#text) :active)
+
+					(reset! selected-keyboard-style "textual")
+				)
+			}
+			"Switch to textual"]
+
+		(when @edit-mode
+			[:button 
+				{
+					:on-click #(db/populate-empty-layout)
+				}
+				"new EMPTY"])
+		(when @edit-mode
+			[:button 
+				{
+					:on-click #(db/populate-qwerty-layout)
+				}
+				"new QWERTY"])
+
+		(when @edit-mode
+			[:div.clone-layer
+				[clone-layer-input]
+				[clone-layer-autocomplete]
+			])
+
+	]
+)
+
+
+(defn visual-area [layer-ids]
+
+	[:div.visual
+		{
+			:class (when (= @selected-keyboard-style "visual") "active")
+
+			:on-click #(reset! selected-button-id nil)
+		}
+		
+		[:div.thumbails
+			(for [layer-id layer-ids]
+				^{:key layer-id} [layer-thumb-view layer-id]
+			)
+		]
+		
+		(for[layer-id layer-ids]
+			^{:key layer-id} [layer-view layer-id]
+		)
+	]
+)
+
+
+(defn textual-area [layer-ids]
+
+	[:div.edit
+		(when @selected-button-id
+
+			(if @edit-mode
+
+				(let [button  @(p/pull conn '[*] @selected-button-id)
+				  	row       (:button/row button)
+				  	column    (:button/column button)
+				  	value     (:button/value button)]
+
+				  	[:form
+				  		[button-value-input @selected-button-id value]
+
+				  		[button-command-input @selected-button-id "Command:::"]
+
+				  		[button-functor-select layer-ids]
+
+						[button-control-select layer-ids]
+				  	]
+				)
+			
+				(let [button  @(p/pull conn '[*] @selected-button-id)
+				  	value     (:button/value button)
+				  	command   (:button/command button)]
+
+				  	[:div
+
+						[:pre value]
+						[:pre command]
+
+						[:pre (first @(p/q conn '[ :find [?layer-name] :where [?layer :layer/vid 2][?layer :layer/name ?layer-name]]))]
+					]
+				)
+			)
+		)
+	]
+)
+
+
+
 (defn keyboard-view []
 
 	(let [layer-ids @(p/q conn '[:find [?layer-id ...] :where [?layer-id :layer/name]])]
 			
 		[:div.keyboard
-			[:div.control 
-				[:button 
-					{
-						:on-click (fn [] 
-							(reset! edit-mode false)
-							(.setOption js/editor "readOnly" true)
-						)
-					}
-					"Switch to viewing mode"]
-				[:button 
-					{
-						:on-click (fn []
-							(reset! edit-mode true)
-							(.setOption js/editor "readOnly" false)
-						)
-					}
-					"Switch to editing mode"]
-				[:button 
-					{
-						:on-click (fn []
-							
-							(db/remove-keyboard)
 
-							(db/deserialize-keyboard (.getValue js/editor))
+			[control-area]
 
+			[visual-area layer-ids]
 
-							(dommy/remove-class! (sel1 :#text) :active)
-
-							(reset! selected-keyboard-style "visual")
-						)
-					}
-					"Switch to visual"]
-				[:button 
-					{
-						:on-click (fn []
-
-							(.setValue js/editor (db/serialize-keyboard))
-
-							
-							(dommy/add-class! (sel1 :#text) :active)
-
-							(reset! selected-keyboard-style "textual")
-						)
-					}
-					"Switch to textual"]
-
-				(when @edit-mode
-					[:button 
-						{
-							:on-click #(db/populate-empty-layout)
-						}
-						"new EMPTY"])
-				(when @edit-mode
-					[:button 
-						{
-							:on-click #(db/populate-qwerty-layout)
-						}
-						"new QWERTY"])
-
-				(when @edit-mode
-					[:div.clone-layer
-						[clone-layer-input]
-						[clone-layer-autocomplete]
-					])
-
-			]
-
-			[:div.visual
-				{
-					:class (when (= @selected-keyboard-style "visual") "active")
-
-					:on-click #(reset! selected-button-id nil)
-				}
-				
-				[:div.thumbails
-					(for [layer-id layer-ids]
-						^{:key layer-id} [layer-thumb-view layer-id]
-					)
-				]
-				
-				(for[layer-id layer-ids]
-					^{:key layer-id} [layer-view layer-id]
-				)
-			]
-			
-			[:div.edit
-				(when @selected-button-id
-
-					(if @edit-mode
-
-						(let [button  @(p/pull conn '[*] @selected-button-id)
-						  	row       (:button/row button)
-						  	column    (:button/column button)
-						  	value     (:button/value button)]
-
-						  	[:form
-						  		[button-value-input @selected-button-id value]
-						  		[button-command-input @selected-button-id "Command:::"]
-
-						  		[:select#layers_select 
-						  			{
-						  				:on-change (fn [e] 
-						  					(when (not= (-> e .-target .-value) 0)
-						  						(set! (.-value (sel1 :#control_select)) 0)
-						  						(p/transact! conn [[:db/add @selected-button-id :button/value (str "LN_" (-> e .-target .-value))]])
-						  					)
-						  				)
-						  			}  
-
-						  			[:option {:value 0} "Select layer transition"] 
-
-						  			(for [layer-id layer-ids]
-						  				(let [layer @(p/pull conn '[*] layer-id)
-											virtual-id 	(:layer/virtual-id layer)
-											name 		(:layer/name layer)]
-
-											[:option {:value virtual-id} name]  
-										)
-									)
-								]
-
-								[:select#control_select 
-						  			{
-						  				:on-change (fn [e] 
-						  					(when (not= (-> e .-target .-value) 0)
-						  						(set! (.-value (sel1 :#layers_select)) 0)
-						  						(p/transact! conn [[:db/add @selected-button-id :button/value (-> e .-target .-value)]])
-						  					)
-						  				)
-						  			}  
-
-						  			[:option {:value 0} "Select control button"] 
-
-						  			[:option {:value "LSHIFT"} "Left Shift"]
-						  			[:option {:value "RSHIFT"} "Right Shift"]
-
-						  			[:option {:value "LCTRL"} "Left Control"]
-						  			[:option {:value "RCTRL"} "Right Control"]
-
-						  			[:option {:value "LALT"} "Left Alt"] 
-						  			[:option {:value "RALT"} "Right Alt"]  
-
-						  			[:option {:value "SPC"} "Space"] 
-						  			[:option {:value "BKSPC"} "Backspace"]
-						  			[:option {:value "TAB"} "Tab"] 
-						  			[:option {:value "ENTR"} "Enter"]
-									[:option {:value "ESC"} "Escape"]
-
-									[:option {:value "UP"} "Arrow Up"]
-									[:option {:value "DOWN"} "Arrow Down"]
-									[:option {:value "LEFT"} "Arrow Left"]
-									[:option {:value "RIGHT"} "Arrow Right"]					  			    
-								]
-
-								[:pre row]
-								[:pre column]
-						  	]
-						)
-					
-						(let [button  @(p/pull conn '[*] @selected-button-id)
-						  	row       (:button/row button)
-						  	column    (:button/column button)
-						  	value     (:button/value button)
-						  	command   (:button/command button)]
-
-						  	[:div
-
-								[:pre value]
-								[:pre command]
-							  	[:pre row]
-								[:pre column]
-
-								[:pre (first @(p/q conn '[ :find [?layer-name] :where [?layer :layer/virtual-id 2][?layer :layer/name ?layer-name]]))]
-							]
-						)
-					)
-				)
-			]
+			[textual-area layer-ids]
 		]
 	)
 )
+
+
 
 (defn ^:export initialize [keyboard-data]
 	(db/deserialize-keyboard keyboard-data)
