@@ -1,7 +1,8 @@
 (ns yizhackclj.db
 	(:require   [datascript.core :as d]
 				[posh.core :as p]
-				[ajax.core :refer [GET POST]]))
+				[ajax.core :refer [GET POST]]
+				[reagent.core :as r]))
 
 
 (defn new-entity! [conn varmap]
@@ -346,8 +347,8 @@
 		{\"row\":4,\"column\":8,\"value\":\"TAB\"},
 		{\"row\":4,\"column\":7,\"value\":\"ENTR\"}]")
 
-(def empty-layer (str "{\"name\":\"Empty Layer\",\"buttons\":" empty-layout "}"))
-(def qwerty-layer (str "{\"name\":\"QWERTY Layer\",\"buttons\":" qwerty-layout "}"))
+(def empty-layer (str "{\"name\":\"Empty Layer\",\"color\":\"#ffffff\",\"buttons\":" empty-layout "}"))
+(def qwerty-layer (str "{\"name\":\"QWERTY Layer\",\"color\":\"#ffffff\",\"buttons\":" qwerty-layout "}"))
 
 
 (def fixture-keyboard (str "{\"layers\":[{\"name\":\"Layer 1\",\"id\":1,\"color\":\"#ff0000\",\"buttons\":" qwerty-layout "}, {\"name\":\"Layer 2\",\"id\":2,\"color\":\"#00ff00\",\"buttons\":" empty-layout "}]}"))
@@ -367,23 +368,44 @@
 
 
 
+(def clone-layer-autocomplete-results (r/atom []))
+ 
 
 
-
-(defn on-get-keyboard-request-handler [response] 
-	(deserialize-keyboard response)
+(defn on-get-layers-request-handler [response] 
+	(reset! clone-layer-autocomplete-results (parse-json response))
 )
 
-(defn on-get-keyboard-request-error-handler [{:keys [status status-text]}]
-  (println (str "Error while getting keyboard: " status " " status-text))
+(defn on-get-layers-request-error-handler [{:keys [status status-text]}]
+  (println (str "Error while getting layers automoplete: " status " " status-text))
 )
 
-(defn get-keyboard-from-server []
+(defn get-layers-from-server [query]
 
-	(GET "http://localhost:3000/keyboard/show" {
+	(GET (str "http://localhost:3000/autocomplete?q=" query) {
 		:response-format :raw 
-		:handler on-get-keyboard-request-handler 
-		:error-handler on-get-keyboard-request-error-handler
+		:handler on-get-layers-request-handler 
+		:error-handler on-get-layers-request-error-handler
+		})
+)
+
+
+
+
+(defn on-get-layer-request-handler [response] 
+	(deserialize-layer response)
+)
+
+(defn on-get-layer-request-error-handler [{:keys [status status-text]}]
+  (println (str "Error while getting layer: " status " " status-text))
+)
+
+(defn get-layer-from-server [path]
+
+	(GET (str "http://localhost:3000/" path) {
+		:response-format :raw 
+		:handler on-get-layer-request-handler 
+		:error-handler on-get-layer-request-error-handler
 		})
 )
 

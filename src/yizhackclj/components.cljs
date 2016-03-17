@@ -259,6 +259,44 @@
 )
 
 
+
+
+
+(defn clone-layer-input []
+	[:input 
+		{
+			:type "text"
+
+			:id "autocomplete" 
+			 
+            :on-change (fn [e]
+            	(println "making request for " (-> e .-target .-value))
+            	(db/get-layers-from-server (-> e .-target .-value))
+            )
+		}
+	] 
+)
+
+(defn clone-layer-autocomplete []
+	(let [results @db/clone-layer-autocomplete-results]
+		[:div.autocomplete 
+			(for [result results]
+				[:a 
+					{
+						:on-click (fn [e]
+							(set! (.-value (sel1 :#autocomplete)) "")
+							(reset! db/clone-layer-autocomplete-results [])
+							(db/get-layer-from-server result)
+						)
+					}
+
+					result
+				]
+			)
+		] 
+	)
+)
+
 (defn keyboard-view []
 
 	(let [layer-ids @(p/q conn '[:find [?layer-id ...] :where [?layer-id :layer/name]])]
@@ -322,6 +360,13 @@
 							:on-click #(db/populate-qwerty-layout)
 						}
 						"new QWERTY"])
+
+				(when @edit-mode
+					[:div.clone-layer
+						[clone-layer-input]
+						[clone-layer-autocomplete]
+					])
+
 			]
 
 			[:div.visual
