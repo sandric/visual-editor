@@ -65,7 +65,7 @@
 )
 
 
-(defn clone-layer! [conn layer-id layer-name]
+(defn clone-layer [layer-id layer-name]
 	(let [  buttons @(p/q conn '[ 	:find ?button ?value ?row ?column
 									:in $ ?layer-id
 									:where 
@@ -94,7 +94,7 @@
 )
 
 
-(defn remove-layer! [conn layer-id layer-vid]
+(defn remove-layer [layer-id layer-vid]
 	(let [  layers  			@(p/q conn '[ 	:find ?layer ?later-vid
 												:in $ ?layer-id
 												:where 
@@ -150,7 +150,7 @@
 		(reset! vid 0)
 
 		(doseq [layer-id layers-ids]
-			(remove-layer! conn layer-id nil)
+			(remove-layer layer-id nil)
 		)
 	)
 )
