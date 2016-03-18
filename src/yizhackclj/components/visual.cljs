@@ -4,7 +4,7 @@
   			[posh.core :as p]
   			[dommy.core :as dommy :refer-macros [sel sel1]]
 
-  			[yizhackclj.db :as db :refer [conn]]
+  			[yizhackclj.db.keyboard :as db :refer [conn]]
 
   			[yizhackclj.utils :as utils]
 
