@@ -1,13 +1,17 @@
-(ns yizhackclj.control-components
+(ns yizhackclj.components.control
   	(:require 
   			[reagent.core :as r]
   			[posh.core :as p]
   			[dommy.core :as dommy :refer-macros [sel sel1]]
 
-  			[yizhackclj.db :as db :refer [conn]]
+  			[yizhackclj.db.keyboard :as db :refer [conn]]
+  			[yizhackclj.db.serialization :as db-serialization]
+  			[yizhackclj.db.fixtures :as db-fixtures]
 
-  			[yizhackclj.state-components :as state-components]
-  			[yizhackclj.layer-components :as layer-components]
+  			[yizhackclj.utils :as utils]
+
+  			[yizhackclj.components.state :as state-components]
+  			[yizhackclj.components.layer :as layer-components]
   	)
 )
 
@@ -37,7 +41,7 @@
 					
 					(db/remove-keyboard)
 
-					(db/deserialize-keyboard (.getValue js/editor))
+					(db-serialization/deserialize-keyboard (.getValue js/editor))
 
 
 					(dommy/remove-class! (sel1 :#text) :active)
@@ -50,7 +54,7 @@
 			{
 				:on-click (fn []
 
-					(.setValue js/editor (db/serialize-keyboard))
+					(.setValue js/editor (db-serialization/serialize-keyboard))
 
 					
 					(dommy/add-class! (sel1 :#text) :active)
@@ -63,13 +67,13 @@
 		(when @state-components/edit-mode
 			[:button 
 				{
-					:on-click #(db/populate-empty-layout)
+					:on-click #(db-fixtures/populate-empty-layout)
 				}
 				"new EMPTY"])
 		(when @state-components/edit-mode
 			[:button 
 				{
-					:on-click #(db/populate-qwerty-layout)
+					:on-click #(db-fixtures/populate-qwerty-layout)
 				}
 				"new QWERTY"])
 

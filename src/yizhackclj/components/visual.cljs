@@ -1,4 +1,4 @@
-(ns yizhackclj.visual-components
+(ns yizhackclj.components.visual
   	(:require 
   			[reagent.core :as r]
   			[posh.core :as p]
@@ -6,8 +6,10 @@
 
   			[yizhackclj.db :as db :refer [conn]]
 
-  			[yizhackclj.state-components :as state-components]
-  			[yizhackclj.layer-components :as layer-components]
+  			[yizhackclj.utils :as utils]
+
+  			[yizhackclj.components.state :as state-components]
+  			[yizhackclj.components.layer :as layer-components]
   	)
 )
 

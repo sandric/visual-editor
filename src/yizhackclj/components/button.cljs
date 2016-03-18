@@ -1,12 +1,14 @@
-(ns yizhackclj.button-components
+(ns yizhackclj.components.button
   	(:require 
   			[reagent.core :as r]
   			[posh.core :as p]
   			[dommy.core :as dommy :refer-macros [sel sel1]]
 
-  			[yizhackclj.db :as db :refer [conn]]
+  			[yizhackclj.utils :as utils]
 
-  			[yizhackclj.state-components :as state-components]
+  			[yizhackclj.db.keyboard :as db :refer [conn]]
+
+  			[yizhackclj.components.state :as state-components]
   	)
 )
 
@@ -27,24 +29,6 @@
 		}
 	] 
 )
-
-(defn button-command-input [button-id command]
-
-	[:input 
-		{
-			:type "text" 
-			:maxLength 8
-			:value command 
-            
-            :on-change (fn [e]
-            	(set! (.-value (sel1 :#layers_select)) 0)
-            	(set! (.-value (sel1 :#control_select)) 0)
-            	(p/transact! conn [[:db/add button-id :button/command (-> e .-target .-value)]])
-            )
-		}
-	] 
-)
-
 
 
 (defn button-functor-select [layer-ids]
@@ -113,7 +97,7 @@
 
 (defn color-for-functor-button [functor]
 
-	(let [vid 		(db/parse-layer functor)
+	(let [vid 		(utils/parse-layer functor)
 		  layer 	(db/layer-by-vid vid)]
 
 		  (:layer/color layer)
@@ -124,7 +108,7 @@
 
 	(cond
 		selected "aquamarine" 
-		hovered  "lavender" 
+		hovered  "lavender"
 		(.startsWith value "LN_") (color-for-functor-button value)
 		(> (count value) 1) "grey"
 		
@@ -145,7 +129,7 @@
 				  column    (:button/column button)
 				  value     (:button/value button)]
 
-				(when @hovered (reset! state-components/hovered-vid (db/parse-layer value)))
+				(when @hovered (reset! state-components/hovered-vid (utils/parse-layer value)))
 
 				[:div.button 
 					{

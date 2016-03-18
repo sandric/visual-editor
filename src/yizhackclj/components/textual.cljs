@@ -1,13 +1,15 @@
-(ns yizhackclj.textual-components
+(ns yizhackclj.components.textual
   	(:require 
   			[reagent.core :as r]
   			[posh.core :as p]
   			[dommy.core :as dommy :refer-macros [sel sel1]]
 
-  			[yizhackclj.db :as db :refer [conn]]
+  			[yizhackclj.db.keyboard :as db :refer [conn]]
 
-  			[yizhackclj.state-components :as state-components]
-  			[yizhackclj.button-components :as button-components]
+  			[yizhackclj.utils :as utils]
+
+  			[yizhackclj.components.state :as state-components]
+  			[yizhackclj.components.button :as button-components]
   	)
 )
 
@@ -19,15 +21,13 @@
 
 			(if @state-components/edit-mode
 
-				(let [button  @(p/pull conn '[*] @state-components/selected-button-id)
-				  	row       (:button/row button)
-				  	column    (:button/column button)
-				  	value     (:button/value button)]
+				(let [	button  @(p/pull conn '[*] @state-components/selected-button-id)
+					  	row       (:button/row button)
+					  	column    (:button/column button)
+					  	value     (:button/value button)]
 
 				  	[:form
 				  		[button-components/button-value-input @state-components/selected-button-id value]
-
-				  		[button-components/button-command-input @state-components/selected-button-id "Command:::"]
 
 				  		[button-components/button-functor-select layer-ids]
 
@@ -35,14 +35,12 @@
 				  	]
 				)
 			
-				(let [button  @(p/pull conn '[*] @state-components/selected-button-id)
-				  	value     (:button/value button)
-				  	command   (:button/command button)]
+				(let [	button  @(p/pull conn '[*] @state-components/selected-button-id)
+				  		value     (:button/value button)]
 
 				  	[:div
 
 						[:pre value]
-						[:pre command]
 
 						[:pre (first @(p/q conn '[ :find [?layer-name] :where [?layer :layer/vid 2][?layer :layer/name ?layer-name]]))]
 					]

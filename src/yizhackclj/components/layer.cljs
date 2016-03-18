@@ -1,13 +1,16 @@
-(ns yizhackclj.layer-components
+(ns yizhackclj.components.layer
   	(:require 
   			[reagent.core :as r]
   			[posh.core :as p]
   			[dommy.core :as dommy :refer-macros [sel sel1]]
 
-  			[yizhackclj.db :as db :refer [conn]]
+  			[yizhackclj.db.keyboard :as db :refer [conn]]
+  			[yizhackclj.db.autocomplete :as db-autocomplete]
 
-  			[yizhackclj.state-components :as state-components]
-  			[yizhackclj.button-components :as button-components]
+  			[yizhackclj.utils :as utils]
+
+  			[yizhackclj.components.state :as state-components]
+  			[yizhackclj.components.button :as button-components]
   	)
 )
 
@@ -72,13 +75,13 @@
 				(when @state-components/edit-mode
 					[:button 
 						{
-							:on-click #(db/remove-layer layer-id vid)
+							:on-click #(db/remove-layer layer-id)
 						}
 						"remove"])
 				(when @state-components/edit-mode
 					[:button 
 						{
-							:on-click #(db/clone-layer layer-id name)
+							:on-click #(db/clone-layer layer-id)
 						}
 						"clone"])
 				(when @state-components/edit-mode
@@ -155,7 +158,7 @@
 			 
             :on-change (fn [e]
             	(println "making request for " (-> e .-target .-value))
-            	(db/get-layers-from-server (-> e .-target .-value))
+            	(db-autocomplete/get-layers-from-server (-> e .-target .-value))
             )
 		}
 	] 
@@ -163,15 +166,15 @@
 
 (defn clone-layer-autocomplete []
 
-	(let [results @db/clone-layer-autocomplete-results]
+	(let [results @db-autocomplete/clone-layer-autocomplete-results]
 		[:div.autocomplete 
 			(for [result results]
 				[:a 
 					{
 						:on-click (fn [e]
 							(set! (.-value (sel1 :#autocomplete)) "")
-							(reset! db/clone-layer-autocomplete-results [])
-							(db/get-layer-from-server result)
+							(reset! db-autocomplete/clone-layer-autocomplete-results [])
+							(db-autocomplete/get-layer-from-server result)
 						)
 					}
 

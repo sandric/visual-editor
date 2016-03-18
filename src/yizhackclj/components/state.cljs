@@ -1,4 +1,4 @@
-(ns yizhackclj.state-components
+(ns yizhackclj.components.state
   	(:require 
   		[reagent.core :as r]
   	)
