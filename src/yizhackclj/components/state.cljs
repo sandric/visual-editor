@@ -10,6 +10,8 @@
 
 (def edit-mode (r/atom true))
 
+(def commiting (r/atom false))
+
 
 (def hovered-vid (r/atom 0))
 (def selected-vid (r/atom 0))

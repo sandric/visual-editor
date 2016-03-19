@@ -81,6 +81,13 @@
 				"new QWERTY"])
 
 		(when @state-components/edit-mode
+			[:button 
+	        {
+	          :on-click #(reset! state-components/commiting true)
+	        }
+	        "Commit"])
+
+		(when @state-components/edit-mode
 			[:div.clone-layer
 				[layer-components/clone-layer-input]
 				[layer-components/clone-layer-autocomplete]

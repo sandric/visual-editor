@@ -8,9 +8,13 @@
 
         [yizhackclj.utils :as utils]
 
+
+        [yizhackclj.components.state :as state-components]
+
   			[yizhackclj.components.control :as control-components]
   			[yizhackclj.components.visual :as visual-components]
   			[yizhackclj.components.textual :as textual-components]
+        [yizhackclj.components.commit :as commit-components]
   	)
 )
   
@@ -18,14 +22,16 @@
 (defn keyboard-view []
 
 	(let [layer-ids (db/layer-ids)]
-			 
-		[:div.keyboard
+
+	  [:div.keyboard
 
 			[control-components/control]
+
+      [commit-components/commit]
 
 			[visual-components/visual layer-ids]
 
 			[textual-components/textual layer-ids]
 		]
-	)
+  )
 )
