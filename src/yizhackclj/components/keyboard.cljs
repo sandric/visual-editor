@@ -18,8 +18,6 @@
 (defn keyboard-view []
 
 	(let [layer-ids (db/layer-ids)]
-
-    (println "lala")
 			 
 		[:div.keyboard
 

@@ -19,6 +19,9 @@
 
 	(db-serialization/deserialize-keyboard keyboard-data)
 	(p/posh! conn)
+
+	(.createEditor js/window (db-serialization/serialize-keyboard))
+
 	(r/render-component [keyboard-components/keyboard-view] (.getElementById js/document "app"))
 )
 

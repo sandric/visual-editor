@@ -23,7 +23,7 @@
 			{
 				:on-click (fn [] 
 					(reset! state-components/edit-mode false)
-					(.setOption js/editor "readOnly" true)
+					(.setOption (.editor js/editor) "readOnly" true)
 				)
 			}
 			"Switch to viewing mode"]
@@ -31,7 +31,7 @@
 			{
 				:on-click (fn []
 					(reset! state-components/edit-mode true)
-					(.setOption js/editor "readOnly" false)
+					(.setOption (.editor js/editor) "readOnly" false)
 				)
 			}
 			"Switch to editing mode"]
@@ -41,10 +41,12 @@
 					
 					(db/remove-keyboard)
 
-					(db-serialization/deserialize-keyboard (.getValue js/editor))
+
+					(db-serialization/deserialize-keyboard (.getValue (.editor js/editor)))
 
 
-					(dommy/remove-class! (sel1 :#text) :active)
+					(dommy/remove-class! (sel1 :#editor) :visible)
+					(dommy/add-class! (sel1 :#editor) :hidden)
 
 					(reset! state-components/selected-keyboard-style "visual")
 				)
@@ -54,10 +56,11 @@
 			{
 				:on-click (fn []
 
-					(.setValue js/editor (db-serialization/serialize-keyboard))
+					(.setValue (.editor js/editor) (db-serialization/serialize-keyboard))
 
 					
-					(dommy/add-class! (sel1 :#text) :active)
+					(dommy/remove-class! (sel1 :#editor) :hidden)
+					(dommy/add-class! (sel1 :#editor) :visible)
 
 					(reset! state-components/selected-keyboard-style "textual")
 				)
