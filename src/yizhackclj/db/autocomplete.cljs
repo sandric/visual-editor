@@ -23,7 +23,7 @@
 
 (defn get-layers-from-server [query]
 
-	(GET (str "http://localhost:3000/api/layers?q=" query) {
+	(GET (str "http://localhost:3000/layers?q=" query) {
 		:response-format :raw 
 		:handler on-get-layers-request-handler 
 		:error-handler on-get-layers-request-error-handler

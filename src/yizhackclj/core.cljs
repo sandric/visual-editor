@@ -46,7 +46,7 @@
 	(r/render-component [keyboard-components/keyboard-view] (.getElementById js/document "app"))
 )
 
-(initialize db-fixtures/fixture-keyboard false) 
+;(initialize db-fixtures/fixture-keyboard true) 
 
  
 (defn on-js-reload []
