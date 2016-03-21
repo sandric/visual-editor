@@ -1,16 +1,17 @@
-(ns yizhackclj.components.state
+(ns yizhackclj.state
   	(:require 
   		[reagent.core :as r]
   	)
-  )
+)
 
-
-
-(def selected-keyboard-style (r/atom "visual"))
 
 (def edit-mode (r/atom true))
 
-(def commiting (r/atom false))
+(def selected-keyboard-style (r/atom "visual"))
+
+
+(def initial-keyboard-data (r/atom ""))
+(def keyboard-data (r/atom ""))
 
 
 (def hovered-vid (r/atom 0))

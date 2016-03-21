@@ -3,9 +3,9 @@
 		[ajax.core :refer [GET POST]]
 		[reagent.core :as r]
 
-		[yizhackclj.db.serialization :as db-serialization]
-
 		[yizhackclj.utils :as utils]
+
+		[yizhackclj.db.serialization :as db-serialization]
 	)
 )
 

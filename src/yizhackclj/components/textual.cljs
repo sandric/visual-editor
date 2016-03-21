@@ -4,11 +4,12 @@
   			[posh.core :as p]
   			[dommy.core :as dommy :refer-macros [sel sel1]]
 
-  			[yizhackclj.db.keyboard :as db :refer [conn]]
-
   			[yizhackclj.utils :as utils]
 
-  			[yizhackclj.components.state :as state-components]
+  			[yizhackclj.state :as state]
+
+  			[yizhackclj.db.keyboard :as db :refer [conn]]
+
   			[yizhackclj.components.button :as button-components]
   	)
 )
@@ -17,17 +18,17 @@
 (defn textual [layer-ids]
 
 	[:div.edit
-		(when @state-components/selected-button-id
+		(when @state/selected-button-id
 
-			(if @state-components/edit-mode
+			(if @state/edit-mode
 
-				(let [	button  @(p/pull conn '[*] @state-components/selected-button-id)
+				(let [	button  @(p/pull conn '[*] @state/selected-button-id)
 					  	row       (:button/row button)
 					  	column    (:button/column button)
 					  	value     (:button/value button)]
 
 				  	[:form
-				  		[button-components/button-value-input @state-components/selected-button-id value]
+				  		[button-components/button-value-input @state/selected-button-id value]
 
 				  		[button-components/button-functor-select layer-ids]
 
@@ -35,7 +36,7 @@
 				  	]
 				)
 			
-				(let [	button  @(p/pull conn '[*] @state-components/selected-button-id)
+				(let [	button  @(p/pull conn '[*] @state/selected-button-id)
 				  		value     (:button/value button)]
 
 				  	[:div

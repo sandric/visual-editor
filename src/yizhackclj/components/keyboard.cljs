@@ -4,17 +4,15 @@
   			[posh.core :as p]
   			[dommy.core :as dommy :refer-macros [sel sel1]]
 
-  			[yizhackclj.db.keyboard :as db :refer [conn]]
-
         [yizhackclj.utils :as utils]
 
+        [yizhackclj.state :as state]
 
-        [yizhackclj.components.state :as state-components]
+  			[yizhackclj.db.keyboard :as db :refer [conn]]
 
   			[yizhackclj.components.control :as control-components]
   			[yizhackclj.components.visual :as visual-components]
   			[yizhackclj.components.textual :as textual-components]
-        [yizhackclj.components.commit :as commit-components]
   	)
 )
   
@@ -26,8 +24,6 @@
 	  [:div.keyboard
 
 			[control-components/control]
-
-      [commit-components/commit]
 
 			[visual-components/visual layer-ids]
 

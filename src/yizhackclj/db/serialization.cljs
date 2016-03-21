@@ -3,9 +3,11 @@
 		[datascript.core :as d]
 		[posh.core :as p]
 
-		[yizhackclj.db.keyboard :as db :refer [conn]]
-
 		[yizhackclj.utils :as utils]
+
+		[yizhackclj.state :as state]
+
+		[yizhackclj.db.keyboard :as db :refer [conn]]
 	)
 )
 
@@ -44,9 +46,9 @@
 		(db/vid-inc)
 		(generate-layer-datom 
 			(:name layer)
-			(:id layer)
+			(:vid layer)
 			(:color layer)
-			(:buttons layer))
+			(:layout layer))
 	)
 )
 
@@ -78,7 +80,7 @@
 		  								layer-id))]
 
 
-		{:name name :id vid :color color :buttons (map convert-button-to-edn buttons-ids)}
+		{:name name :vid vid :color color :layout (map convert-button-to-edn buttons-ids)}
 	)
 )
 
@@ -103,16 +105,28 @@
 			(:name parsed-layer)
 			(db/vid-inc)
 			(:color parsed-layer) 
-			(:buttons parsed-layer))
+			(:layout parsed-layer))
 	)
 )
 
 
-(defn ^:export deserialize-keyboard [json]
-	(generate-keyboard-datom (utils/parse-json json))
+(defn ^:export deserialize-keyboard []
+	(generate-keyboard-datom (utils/parse-json @state/keyboard-data))
 )
 
 
 (defn ^:export serialize-keyboard []
-	(utils/to-json (convert-keyboard-to-edn))
+	(if (= @state/selected-keyboard-style "visual")
+		(utils/to-json (convert-keyboard-to-edn))
+		@state/keyboard-data
+	)
+)
+
+
+(defn ^:export s []
+	@state/keyboard-data
+)
+
+(defn ^:export set-keyboard-data [new-keyboard-data]
+	(reset! state/keyboard-data new-keyboard-data)
 )

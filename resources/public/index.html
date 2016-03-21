@@ -21,6 +21,7 @@
 
 
     <script>
+
       function mergeViewHeight(mergeView) {
         function editorHeight(editor) {
           if (!editor) return 0;
@@ -47,35 +48,28 @@
         mergeView.wrap.style.height = height + "px";
       }
 
-
     
-      window.createEditor = function(originalData) {
+      window.createEditor = function(initialKeyboardData) {
 
         var editorElement = document.getElementById("editor");
 
         window.editor = CodeMirror.MergeView(editorElement, {
-                  orig: originalData,
-                  value: originalData,
-                  lineNumbers: true,
-                  mode: "application/ld+json",
-                  highlightDifferences: true
-              });
+          orig: initialKeyboardData,
+          value: initialKeyboardData,
+          lineNumbers: true,
+          mode: "application/ld+json",
+          highlightDifferences: true
+        });
+
+        window.editor.editor().on("change", function(editor, change) {
+          yizhackclj.db.serialization.set_keyboard_data(editor.getValue()); 
+        });
 
         resize(window.editor)
 
-        editorElement.className += " hidden";
+        editorElement.className += "hidden";
       }
 
-
-      window.commit = function(name, description, layers) {
-        console.log('making commit:');
-
-        console.log(name);
-
-        console.log(description);
-
-        console.log(layers);
-      }
     </script>
 
     <script src="js/compiled/yizhackclj.js" type="text/javascript"></script>

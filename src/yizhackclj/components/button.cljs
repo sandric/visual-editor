@@ -6,9 +6,9 @@
 
   			[yizhackclj.utils :as utils]
 
-  			[yizhackclj.db.keyboard :as db :refer [conn]]
+  			[yizhackclj.state :as state]
 
-  			[yizhackclj.components.state :as state-components]
+  			[yizhackclj.db.keyboard :as db :refer [conn]]
   	)
 )
 
@@ -38,7 +38,7 @@
 			:on-change (fn [e] 
 				(when (not= (-> e .-target .-value) 0)
 					(set! (.-value (sel1 :#control_select)) 0)
-					(p/transact! conn [[:db/add @state-components/selected-button-id :button/value (str "LN_" (-> e .-target .-value))]])
+					(p/transact! conn [[:db/add @state/selected-button-id :button/value (str "LN_" (-> e .-target .-value))]])
 				)
 			)
 		}  
@@ -65,7 +65,7 @@
 				:on-change (fn [e] 
 					(when (not= (-> e .-target .-value) 0)
 						(set! (.-value (sel1 :#layers_select)) 0)
-						(p/transact! conn [[:db/add @state-components/selected-button-id :button/value (-> e .-target .-value)]])
+						(p/transact! conn [[:db/add @state/selected-button-id :button/value (-> e .-target .-value)]])
 					)
 				)
 			}  
@@ -129,12 +129,12 @@
 				  column    (:button/column button)
 				  value     (:button/value button)]
 
-				(when @hovered (reset! state-components/hovered-vid (utils/parse-layer value)))
+				(when @hovered (reset! state/hovered-vid (utils/parse-layer value)))
 
 				[:div.button 
 					{
 						:style {
-							:background-color (get-button-color value (= @state-components/selected-button-id button-id) @hovered)
+							:background-color (get-button-color value (= @state/selected-button-id button-id) @hovered)
 
 							:opacity (if @hovered 0.5 1)
 
@@ -142,11 +142,11 @@
 							:top  (* (dec row) 55)
 						}
 
-						:on-click (fn [e] (when @state-components/edit-mode (reset! state-components/selected-button-id button-id) (.stopPropagation e)))
+						:on-click (fn [e] (when @state/edit-mode (reset! state/selected-button-id button-id) (.stopPropagation e)))
 
-						:on-mouse-over #(when @state-components/edit-mode(reset! hovered true))
+						:on-mouse-over #(when @state/edit-mode(reset! hovered true))
 
-						:on-mouse-out  #(when @state-components/edit-mode (reset! hovered false))
+						:on-mouse-out  #(when @state/edit-mode (reset! hovered false))
 
 					}
 					

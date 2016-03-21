@@ -4,12 +4,13 @@
   			[posh.core :as p]
   			[dommy.core :as dommy :refer-macros [sel sel1]]
 
+  			[yizhackclj.utils :as utils]
+
+  			[yizhackclj.state :as state]
+
   			[yizhackclj.db.keyboard :as db :refer [conn]]
   			[yizhackclj.db.autocomplete :as db-autocomplete]
 
-  			[yizhackclj.utils :as utils]
-
-  			[yizhackclj.components.state :as state-components]
   			[yizhackclj.components.button :as button-components]
   	)
 )
@@ -64,7 +65,7 @@
 		
 		[:div.layer 
 			{
-				:class (when (= @state-components/selected-vid vid) "selected")
+				:class (when (= @state/selected-vid vid) "selected")
 				:style {
 					:background-color color 
 				}
@@ -72,26 +73,26 @@
 
 			[:div.control
 
-				(when @state-components/edit-mode
+				(when @state/edit-mode
 					[:button 
 						{
 							:on-click #(db/remove-layer layer-id)
 						}
 						"remove"])
-				(when @state-components/edit-mode
+				(when @state/edit-mode
 					[:button 
 						{
 							:on-click #(db/clone-layer layer-id)
 						}
 						"clone"])
-				(when @state-components/edit-mode
+				(when @state/edit-mode
 					[:button 
 						{
 							:on-click #(doseq [button-id buttons-ids] (p/transact! conn [[:db/add button-id :button/value ""]]))
 						}
 						"clear"])
 
-				(if @state-components/edit-mode
+				(if @state/edit-mode
 					[:form
 						[layer-name-input layer-id name]
 						[layer-color-input layer-id color]
@@ -125,13 +126,13 @@
 		  							layer-id)]
 		[:div.layer.thumb 
 			{
-				:class (str (when (= @state-components/selected-vid vid) "selected") (when (= @state-components/hovered-vid vid) " hovered"))
+				:class (str (when (= @state/selected-vid vid) "selected") (when (= @state/hovered-vid vid) " hovered"))
 
 				:style {
 					:background-color color 
 				}
 
-				:on-click #(reset! state-components/selected-vid vid)
+				:on-click #(reset! state/selected-vid vid)
 			}
 
 			[:div.control (str "ID: " vid " Name: " name)]

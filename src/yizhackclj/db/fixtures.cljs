@@ -1,5 +1,8 @@
 (ns yizhackclj.db.fixtures
-	(:require   
+	(:require
+		
+		[yizhackclj.state :as state]
+
 		[yizhackclj.db.serialization :as db-serialization]
 	)
 )
@@ -85,23 +88,28 @@
 		{\"row\":4,\"column\":8,\"value\":\"TAB\"},
 		{\"row\":4,\"column\":7,\"value\":\"ENTR\"}]")
 
-(def empty-layer (str "{\"name\":\"Empty Layer\",\"color\":\"#ffffff\",\"buttons\":" empty-layout "}"))
-(def qwerty-layer (str "{\"name\":\"QWERTY Layer\",\"color\":\"#ffffff\",\"buttons\":" qwerty-layout "}"))
+(def empty-layer (str "{\"name\":\"Empty Layer\",\"color\":\"#ffffff\",\"layout\":" empty-layout "}"))
+(def qwerty-layer (str "{\"name\":\"QWERTY Layer\",\"color\":\"#ffffff\",\"layout\":" qwerty-layout "}"))
 
 
-(def fixture-keyboard (str "{\"layers\":[{\"name\":\"Layer 1\",\"id\":1,\"color\":\"#ff0000\",\"buttons\":" qwerty-layout "}, {\"name\":\"Layer 2\",\"id\":2,\"color\":\"#00ff00\",\"buttons\":" empty-layout "}]}"))
+(def fixture-keyboard (str "{\"layers\":[{\"name\":\"Layer 1\",\"vid\":1,\"color\":\"#ff0000\",\"layout\":" qwerty-layout "}, {\"name\":\"Layer 2\",\"vid\":2,\"color\":\"#00ff00\",\"layout\":" empty-layout "}]}"))
 
 
 
 (defn populate-empty-layout []
+	
 	(db-serialization/deserialize-layer empty-layer)
 )
 
 (defn populate-qwerty-layout []
+	
 	(db-serialization/deserialize-layer qwerty-layer)
 )
  
 
 (defn populate-fixture-keyboard []
-	(db-serialization/deserialize-keyboard fixture-keyboard)
+
+	(reset! state/keyboard-data fixture-keyboard)
+
+	(db-serialization/deserialize-keyboard)
 )

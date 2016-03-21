@@ -4,11 +4,12 @@
   			[posh.core :as p]
   			[dommy.core :as dommy :refer-macros [sel sel1]]
 
-  			[yizhackclj.db.keyboard :as db :refer [conn]]
-
   			[yizhackclj.utils :as utils]
 
-  			[yizhackclj.components.state :as state-components]
+  			[yizhackclj.state :as state]
+
+  			[yizhackclj.db.keyboard :as db :refer [conn]]
+  			
   			[yizhackclj.components.layer :as layer-components]
   	)
 )
@@ -18,9 +19,9 @@
 
 	[:div.visual
 		{
-			:class (when (= @state-components/selected-keyboard-style "visual") "active")
+			:class (when (= @state/selected-keyboard-style "visual") "active")
 
-			:on-click #(reset! state-components/selected-button-id nil)
+			:on-click #(reset! state/selected-button-id nil)
 		}
 		
 		[:div.thumbails
