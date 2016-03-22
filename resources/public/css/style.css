@@ -1,3 +1,17 @@
+.autocomplete {
+	float:right;
+}
+
+.autocomplete input {
+
+}
+
+.autocomplete .results a {
+	display: block;
+}
+
+
+
 #editor.hidden {
 	display: none;
 }
@@ -20,7 +34,7 @@
 }
 
 
-.textual.active {
+.textu§l.active {
 	visibility: visible;
 }
 

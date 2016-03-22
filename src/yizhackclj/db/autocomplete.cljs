@@ -5,6 +5,8 @@
 
 		[yizhackclj.utils :as utils]
 
+		[yizhackclj.state :as state]		
+
 		[yizhackclj.db.serialization :as db-serialization]
 	)
 )
@@ -14,7 +16,7 @@
 
 
 (defn on-get-layers-request-handler [response] 
-	(reset! clone-layer-autocomplete-results (utils/parse-json response))
+	(reset! state/autocomplete-results (utils/parse-json response))
 )
 
 (defn on-get-layers-request-error-handler [{:keys [status status-text]}]

@@ -9,6 +9,8 @@
 
 (def selected-keyboard-style (r/atom "visual"))
 
+(def autocomplete-results (r/atom []))
+
 
 (def initial-keyboard-data (r/atom ""))
 (def keyboard-data (r/atom ""))

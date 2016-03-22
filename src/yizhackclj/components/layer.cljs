@@ -1,17 +1,16 @@
 (ns yizhackclj.components.layer
   	(:require 
-  			[reagent.core :as r]
-  			[posh.core :as p]
-  			[dommy.core :as dommy :refer-macros [sel sel1]]
+		[reagent.core :as r]
+		[posh.core :as p]
+		[dommy.core :as dommy :refer-macros [sel sel1]]
 
-  			[yizhackclj.utils :as utils]
+		[yizhackclj.utils :as utils]
 
-  			[yizhackclj.state :as state]
+		[yizhackclj.state :as state]
 
-  			[yizhackclj.db.keyboard :as db :refer [conn]]
-  			[yizhackclj.db.autocomplete :as db-autocomplete]
+		[yizhackclj.db.keyboard :as db :refer [conn]]
 
-  			[yizhackclj.components.button :as button-components]
+		[yizhackclj.components.button :as button-components]
   	)
 )
 
@@ -132,7 +131,9 @@
 					:background-color color 
 				}
 
-				:on-click #(reset! state/selected-vid vid)
+				:on-click (fn []
+					(reset! state/selected-vid vid)
+				)
 			}
 
 			[:div.control (str "ID: " vid " Name: " name)]
@@ -143,45 +144,5 @@
 				)
 			]
 		]
-	)
-)
-
-
-
-
-(defn clone-layer-input []
-
-	[:input 
-		{
-			:type "text"
-
-			:id "autocomplete" 
-			 
-            :on-change (fn [e]
-            	(println "making request for " (-> e .-target .-value))
-            	(db-autocomplete/get-layers-from-server (-> e .-target .-value))
-            )
-		}
-	] 
-)
-
-(defn clone-layer-autocomplete []
-
-	(let [results @db-autocomplete/clone-layer-autocomplete-results]
-		[:div.autocomplete 
-			(for [result results]
-				[:a 
-					{
-						:on-click (fn [e]
-							(set! (.-value (sel1 :#autocomplete)) "")
-							(reset! db-autocomplete/clone-layer-autocomplete-results [])
-							(db-autocomplete/get-layer-from-server result)
-						)
-					}
-
-					result
-				]
-			)
-		] 
 	)
 )

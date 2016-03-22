@@ -23,6 +23,12 @@
 
 	  [:div.keyboard
 
+      {
+        :on-click (fn [] 
+          (reset! state/autocomplete-results [])
+        )
+      }
+
 			[control-components/control]
 
 			[visual-components/visual layer-ids]

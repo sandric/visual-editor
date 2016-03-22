@@ -27,26 +27,26 @@
 
 	(db-serialization/deserialize-keyboard)
 
-	
-	(.createEditor js/window (db-serialization/serialize-keyboard))
+	(let [serialized-initial-keyboard (db-serialization/serialize-keyboard)]
 
-	
-	(if editing
-		(do
-			(reset! state/edit-mode true)
-			(.setOption (.editor js/editor) "readOnly" false)
-		)
-		(do
-			(reset! state/edit-mode false)
-			(.setOption (.editor js/editor) "readOnly" true)
+		(if editing
+			(do
+				(reset! state/edit-mode true)
+
+				(.createEditor js/window serialized-initial-keyboard, serialized-initial-keyboard)
+			)
+			(do
+				(reset! state/edit-mode false)
+
+				(.createEditor js/window serialized-initial-keyboard)
+			)
 		)
 	)
-
 	
 	(r/render-component [keyboard-components/keyboard-view] (.getElementById js/document "app"))
 )
 
-;(initialize db-fixtures/fixture-keyboard true) 
+(initialize db-fixtures/fixture-keyboard true) 
 
  
 (defn on-js-reload []
