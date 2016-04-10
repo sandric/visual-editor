@@ -14,9 +14,8 @@
   :plugins [[lein-figwheel "0.5.2"]
             [lein-cljsbuild "1.1.3" :exclusions [[org.clojure/clojure]]]]
 
-  ;;:source-paths ["src"]
 
-  ;;:clean-targets ^{:protect false} ["resources/compiled" "target"]
+  :clean-targets ["resources/public/compiled" "resources/public/visual-editor.js" "resources/public/visual-editor-min.js" "target"]
 
 
 
@@ -38,8 +37,6 @@
             :output-to "resources/public/visual-editor.js"
             :output-dir "resources/public/compiled/"
             :optimizations :none
-            ;;:source-map true
-            ;;:source-map-timestamp true
           }
         }
 
@@ -47,13 +44,13 @@
           :id "min"
 
           :source-paths ["src"]
-          ;; :omit-source true
-          ;; :aot :all
 
           :compiler 
           {
-            :output-to "resources/public/visual-editor-min.js"
             :main visual-editor.core
+
+            :output-to "resources/public/visual-editor-min.js"
+            
             :optimizations :advanced
             :pretty-print true
           }

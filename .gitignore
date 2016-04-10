@@ -11,3 +11,7 @@ pom.xml
 .lein-plugins/
 .repl
 .nrepl-port
+
+resources/public/compiled
+resources/public/visual-editor.js
+resources/public/visual-editor-min.js

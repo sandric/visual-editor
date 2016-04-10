@@ -75,51 +75,51 @@ visual_editor.db.layer_head_inc.call(null);
 
 cljs.core.swap_BANG_.call(null,visual_editor.db.layers,cljs.core.conj,new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"id","id",-1388402092),cljs.core.deref.call(null,visual_editor.db.layer_head),new cljs.core.Keyword(null,"name","name",1843675177),[cljs.core.str(new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(layer)),cljs.core.str("'s clone")].join(''),new cljs.core.Keyword(null,"color","color",1011675173),new cljs.core.Keyword(null,"color","color",1011675173).cljs$core$IFn$_invoke$arity$1(layer)], null));
 
-var seq__22999 = cljs.core.seq.call(null,layer_buttons);
-var chunk__23000 = null;
-var count__23001 = (0);
-var i__23002 = (0);
+var seq__7992 = cljs.core.seq.call(null,layer_buttons);
+var chunk__7993 = null;
+var count__7994 = (0);
+var i__7995 = (0);
 while(true){
-if((i__23002 < count__23001)){
-var button = cljs.core._nth.call(null,chunk__23000,i__23002);
+if((i__7995 < count__7994)){
+var button = cljs.core._nth.call(null,chunk__7993,i__7995);
 cljs.core.swap_BANG_.call(null,visual_editor.db.buttons,cljs.core.conj,new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"row","row",-570139521),new cljs.core.Keyword(null,"row","row",-570139521).cljs$core$IFn$_invoke$arity$1(button),new cljs.core.Keyword(null,"column","column",2078222095),new cljs.core.Keyword(null,"column","column",2078222095).cljs$core$IFn$_invoke$arity$1(button),new cljs.core.Keyword(null,"value","value",305978217),new cljs.core.Keyword(null,"value","value",305978217).cljs$core$IFn$_invoke$arity$1(button),new cljs.core.Keyword(null,"layer-id","layer-id",576786958),cljs.core.deref.call(null,visual_editor.db.layer_head)], null));
 
-var G__23003 = seq__22999;
-var G__23004 = chunk__23000;
-var G__23005 = count__23001;
-var G__23006 = (i__23002 + (1));
-seq__22999 = G__23003;
-chunk__23000 = G__23004;
-count__23001 = G__23005;
-i__23002 = G__23006;
+var G__7996 = seq__7992;
+var G__7997 = chunk__7993;
+var G__7998 = count__7994;
+var G__7999 = (i__7995 + (1));
+seq__7992 = G__7996;
+chunk__7993 = G__7997;
+count__7994 = G__7998;
+i__7995 = G__7999;
 continue;
 } else {
-var temp__4657__auto__ = cljs.core.seq.call(null,seq__22999);
+var temp__4657__auto__ = cljs.core.seq.call(null,seq__7992);
 if(temp__4657__auto__){
-var seq__22999__$1 = temp__4657__auto__;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__22999__$1)){
-var c__19229__auto__ = cljs.core.chunk_first.call(null,seq__22999__$1);
-var G__23007 = cljs.core.chunk_rest.call(null,seq__22999__$1);
-var G__23008 = c__19229__auto__;
-var G__23009 = cljs.core.count.call(null,c__19229__auto__);
-var G__23010 = (0);
-seq__22999 = G__23007;
-chunk__23000 = G__23008;
-count__23001 = G__23009;
-i__23002 = G__23010;
+var seq__7992__$1 = temp__4657__auto__;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__7992__$1)){
+var c__7021__auto__ = cljs.core.chunk_first.call(null,seq__7992__$1);
+var G__8000 = cljs.core.chunk_rest.call(null,seq__7992__$1);
+var G__8001 = c__7021__auto__;
+var G__8002 = cljs.core.count.call(null,c__7021__auto__);
+var G__8003 = (0);
+seq__7992 = G__8000;
+chunk__7993 = G__8001;
+count__7994 = G__8002;
+i__7995 = G__8003;
 continue;
 } else {
-var button = cljs.core.first.call(null,seq__22999__$1);
+var button = cljs.core.first.call(null,seq__7992__$1);
 cljs.core.swap_BANG_.call(null,visual_editor.db.buttons,cljs.core.conj,new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"row","row",-570139521),new cljs.core.Keyword(null,"row","row",-570139521).cljs$core$IFn$_invoke$arity$1(button),new cljs.core.Keyword(null,"column","column",2078222095),new cljs.core.Keyword(null,"column","column",2078222095).cljs$core$IFn$_invoke$arity$1(button),new cljs.core.Keyword(null,"value","value",305978217),new cljs.core.Keyword(null,"value","value",305978217).cljs$core$IFn$_invoke$arity$1(button),new cljs.core.Keyword(null,"layer-id","layer-id",576786958),cljs.core.deref.call(null,visual_editor.db.layer_head)], null));
 
-var G__23011 = cljs.core.next.call(null,seq__22999__$1);
-var G__23012 = null;
-var G__23013 = (0);
-var G__23014 = (0);
-seq__22999 = G__23011;
-chunk__23000 = G__23012;
-count__23001 = G__23013;
-i__23002 = G__23014;
+var G__8004 = cljs.core.next.call(null,seq__7992__$1);
+var G__8005 = null;
+var G__8006 = (0);
+var G__8007 = (0);
+seq__7992 = G__8004;
+chunk__7993 = G__8005;
+count__7994 = G__8006;
+i__7995 = G__8007;
 continue;
 }
 } else {
@@ -189,51 +189,51 @@ visual_editor.db.layer_head_inc.call(null);
 
 cljs.core.swap_BANG_.call(null,visual_editor.db.layers,cljs.core.conj,new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"id","id",-1388402092),cljs.core.deref.call(null,visual_editor.db.layer_head),new cljs.core.Keyword(null,"name","name",1843675177),new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(layer_json),new cljs.core.Keyword(null,"color","color",1011675173),new cljs.core.Keyword(null,"color","color",1011675173).cljs$core$IFn$_invoke$arity$1(layer_json)], null));
 
-var seq__23019 = cljs.core.seq.call(null,new cljs.core.Keyword(null,"layout","layout",-2120940921).cljs$core$IFn$_invoke$arity$1(layer_json));
-var chunk__23020 = null;
-var count__23021 = (0);
-var i__23022 = (0);
+var seq__8012 = cljs.core.seq.call(null,new cljs.core.Keyword(null,"layout","layout",-2120940921).cljs$core$IFn$_invoke$arity$1(layer_json));
+var chunk__8013 = null;
+var count__8014 = (0);
+var i__8015 = (0);
 while(true){
-if((i__23022 < count__23021)){
-var button = cljs.core._nth.call(null,chunk__23020,i__23022);
+if((i__8015 < count__8014)){
+var button = cljs.core._nth.call(null,chunk__8013,i__8015);
 cljs.core.swap_BANG_.call(null,visual_editor.db.buttons,cljs.core.conj,new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"row","row",-570139521),new cljs.core.Keyword(null,"row","row",-570139521).cljs$core$IFn$_invoke$arity$1(button),new cljs.core.Keyword(null,"column","column",2078222095),new cljs.core.Keyword(null,"column","column",2078222095).cljs$core$IFn$_invoke$arity$1(button),new cljs.core.Keyword(null,"value","value",305978217),new cljs.core.Keyword(null,"value","value",305978217).cljs$core$IFn$_invoke$arity$1(button),new cljs.core.Keyword(null,"layer-id","layer-id",576786958),cljs.core.deref.call(null,visual_editor.db.layer_head)], null));
 
-var G__23023 = seq__23019;
-var G__23024 = chunk__23020;
-var G__23025 = count__23021;
-var G__23026 = (i__23022 + (1));
-seq__23019 = G__23023;
-chunk__23020 = G__23024;
-count__23021 = G__23025;
-i__23022 = G__23026;
+var G__8016 = seq__8012;
+var G__8017 = chunk__8013;
+var G__8018 = count__8014;
+var G__8019 = (i__8015 + (1));
+seq__8012 = G__8016;
+chunk__8013 = G__8017;
+count__8014 = G__8018;
+i__8015 = G__8019;
 continue;
 } else {
-var temp__4657__auto__ = cljs.core.seq.call(null,seq__23019);
+var temp__4657__auto__ = cljs.core.seq.call(null,seq__8012);
 if(temp__4657__auto__){
-var seq__23019__$1 = temp__4657__auto__;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__23019__$1)){
-var c__19229__auto__ = cljs.core.chunk_first.call(null,seq__23019__$1);
-var G__23027 = cljs.core.chunk_rest.call(null,seq__23019__$1);
-var G__23028 = c__19229__auto__;
-var G__23029 = cljs.core.count.call(null,c__19229__auto__);
-var G__23030 = (0);
-seq__23019 = G__23027;
-chunk__23020 = G__23028;
-count__23021 = G__23029;
-i__23022 = G__23030;
+var seq__8012__$1 = temp__4657__auto__;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__8012__$1)){
+var c__7021__auto__ = cljs.core.chunk_first.call(null,seq__8012__$1);
+var G__8020 = cljs.core.chunk_rest.call(null,seq__8012__$1);
+var G__8021 = c__7021__auto__;
+var G__8022 = cljs.core.count.call(null,c__7021__auto__);
+var G__8023 = (0);
+seq__8012 = G__8020;
+chunk__8013 = G__8021;
+count__8014 = G__8022;
+i__8015 = G__8023;
 continue;
 } else {
-var button = cljs.core.first.call(null,seq__23019__$1);
+var button = cljs.core.first.call(null,seq__8012__$1);
 cljs.core.swap_BANG_.call(null,visual_editor.db.buttons,cljs.core.conj,new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"row","row",-570139521),new cljs.core.Keyword(null,"row","row",-570139521).cljs$core$IFn$_invoke$arity$1(button),new cljs.core.Keyword(null,"column","column",2078222095),new cljs.core.Keyword(null,"column","column",2078222095).cljs$core$IFn$_invoke$arity$1(button),new cljs.core.Keyword(null,"value","value",305978217),new cljs.core.Keyword(null,"value","value",305978217).cljs$core$IFn$_invoke$arity$1(button),new cljs.core.Keyword(null,"layer-id","layer-id",576786958),cljs.core.deref.call(null,visual_editor.db.layer_head)], null));
 
-var G__23031 = cljs.core.next.call(null,seq__23019__$1);
-var G__23032 = null;
-var G__23033 = (0);
-var G__23034 = (0);
-seq__23019 = G__23031;
-chunk__23020 = G__23032;
-count__23021 = G__23033;
-i__23022 = G__23034;
+var G__8024 = cljs.core.next.call(null,seq__8012__$1);
+var G__8025 = null;
+var G__8026 = (0);
+var G__8027 = (0);
+seq__8012 = G__8024;
+chunk__8013 = G__8025;
+count__8014 = G__8026;
+i__8015 = G__8027;
 continue;
 }
 } else {
@@ -248,51 +248,51 @@ visual_editor.db.deserialize_keyboard = (function visual_editor$db$deserialize_k
 visual_editor.db.remove_keyboard.call(null);
 
 var keyboard_json = visual_editor.db.parse_json.call(null,keyboard_json_string);
-var seq__23039 = cljs.core.seq.call(null,new cljs.core.Keyword(null,"layers","layers",1944875032).cljs$core$IFn$_invoke$arity$1(keyboard_json));
-var chunk__23040 = null;
-var count__23041 = (0);
-var i__23042 = (0);
+var seq__8032 = cljs.core.seq.call(null,new cljs.core.Keyword(null,"layers","layers",1944875032).cljs$core$IFn$_invoke$arity$1(keyboard_json));
+var chunk__8033 = null;
+var count__8034 = (0);
+var i__8035 = (0);
 while(true){
-if((i__23042 < count__23041)){
-var layer_json = cljs.core._nth.call(null,chunk__23040,i__23042);
+if((i__8035 < count__8034)){
+var layer_json = cljs.core._nth.call(null,chunk__8033,i__8035);
 visual_editor.db.deserialize_layer.call(null,visual_editor.db.to_json.call(null,layer_json));
 
-var G__23043 = seq__23039;
-var G__23044 = chunk__23040;
-var G__23045 = count__23041;
-var G__23046 = (i__23042 + (1));
-seq__23039 = G__23043;
-chunk__23040 = G__23044;
-count__23041 = G__23045;
-i__23042 = G__23046;
+var G__8036 = seq__8032;
+var G__8037 = chunk__8033;
+var G__8038 = count__8034;
+var G__8039 = (i__8035 + (1));
+seq__8032 = G__8036;
+chunk__8033 = G__8037;
+count__8034 = G__8038;
+i__8035 = G__8039;
 continue;
 } else {
-var temp__4657__auto__ = cljs.core.seq.call(null,seq__23039);
+var temp__4657__auto__ = cljs.core.seq.call(null,seq__8032);
 if(temp__4657__auto__){
-var seq__23039__$1 = temp__4657__auto__;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__23039__$1)){
-var c__19229__auto__ = cljs.core.chunk_first.call(null,seq__23039__$1);
-var G__23047 = cljs.core.chunk_rest.call(null,seq__23039__$1);
-var G__23048 = c__19229__auto__;
-var G__23049 = cljs.core.count.call(null,c__19229__auto__);
-var G__23050 = (0);
-seq__23039 = G__23047;
-chunk__23040 = G__23048;
-count__23041 = G__23049;
-i__23042 = G__23050;
+var seq__8032__$1 = temp__4657__auto__;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__8032__$1)){
+var c__7021__auto__ = cljs.core.chunk_first.call(null,seq__8032__$1);
+var G__8040 = cljs.core.chunk_rest.call(null,seq__8032__$1);
+var G__8041 = c__7021__auto__;
+var G__8042 = cljs.core.count.call(null,c__7021__auto__);
+var G__8043 = (0);
+seq__8032 = G__8040;
+chunk__8033 = G__8041;
+count__8034 = G__8042;
+i__8035 = G__8043;
 continue;
 } else {
-var layer_json = cljs.core.first.call(null,seq__23039__$1);
+var layer_json = cljs.core.first.call(null,seq__8032__$1);
 visual_editor.db.deserialize_layer.call(null,visual_editor.db.to_json.call(null,layer_json));
 
-var G__23051 = cljs.core.next.call(null,seq__23039__$1);
-var G__23052 = null;
-var G__23053 = (0);
-var G__23054 = (0);
-seq__23039 = G__23051;
-chunk__23040 = G__23052;
-count__23041 = G__23053;
-i__23042 = G__23054;
+var G__8044 = cljs.core.next.call(null,seq__8032__$1);
+var G__8045 = null;
+var G__8046 = (0);
+var G__8047 = (0);
+seq__8032 = G__8044;
+chunk__8033 = G__8045;
+count__8034 = G__8046;
+i__8035 = G__8047;
 continue;
 }
 } else {

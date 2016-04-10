@@ -7,21 +7,21 @@ goog.require('reagent.impl.template');
 goog.require('reagent.interop');
 if(typeof reagent.dom.server.server !== 'undefined'){
 } else {
-reagent.dom.server.server = (function (){var or__18418__auto__ = (function (){var and__18406__auto__ = typeof ReactDOMServer !== 'undefined';
-if(and__18406__auto__){
+reagent.dom.server.server = (function (){var or__6210__auto__ = (function (){var and__6198__auto__ = typeof ReactDOMServer !== 'undefined';
+if(and__6198__auto__){
 return ReactDOMServer;
 } else {
-return and__18406__auto__;
+return and__6198__auto__;
 }
 })();
-if(cljs.core.truth_(or__18418__auto__)){
-return or__18418__auto__;
+if(cljs.core.truth_(or__6210__auto__)){
+return or__6210__auto__;
 } else {
-var and__18406__auto__ = typeof require !== 'undefined';
-if(and__18406__auto__){
+var and__6198__auto__ = typeof require !== 'undefined';
+if(and__6198__auto__){
 return require("react-dom/server");
 } else {
-return and__18406__auto__;
+return and__6198__auto__;
 }
 }
 })();
@@ -34,21 +34,21 @@ throw (new Error([cljs.core.str("Assert failed: "),cljs.core.str("Could not find
  * Turns a component into an HTML string.
  */
 reagent.dom.server.render_to_string = (function reagent$dom$server$render_to_string(component){
-var _STAR_non_reactive_STAR_20067 = reagent.impl.util._STAR_non_reactive_STAR_;
+var _STAR_non_reactive_STAR_7857 = reagent.impl.util._STAR_non_reactive_STAR_;
 reagent.impl.util._STAR_non_reactive_STAR_ = true;
 
 try{return (reagent.dom.server.server["renderToString"])(reagent.impl.template.as_element.call(null,component));
-}finally {reagent.impl.util._STAR_non_reactive_STAR_ = _STAR_non_reactive_STAR_20067;
+}finally {reagent.impl.util._STAR_non_reactive_STAR_ = _STAR_non_reactive_STAR_7857;
 }});
 /**
  * Turns a component into an HTML string, without data-react-id attributes, etc.
  */
 reagent.dom.server.render_to_static_markup = (function reagent$dom$server$render_to_static_markup(component){
-var _STAR_non_reactive_STAR_20069 = reagent.impl.util._STAR_non_reactive_STAR_;
+var _STAR_non_reactive_STAR_7859 = reagent.impl.util._STAR_non_reactive_STAR_;
 reagent.impl.util._STAR_non_reactive_STAR_ = true;
 
 try{return (reagent.dom.server.server["renderToStaticMarkup"])(reagent.impl.template.as_element.call(null,component));
-}finally {reagent.impl.util._STAR_non_reactive_STAR_ = _STAR_non_reactive_STAR_20069;
+}finally {reagent.impl.util._STAR_non_reactive_STAR_ = _STAR_non_reactive_STAR_7859;
 }});
 
 //# sourceMappingURL=server.js.map
