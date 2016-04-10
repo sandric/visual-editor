@@ -22,7 +22,7 @@
 	(r/render-component [keyboard-components/keyboard] (.getElementById js/document "visual-editor"))
 )
 
-(initialize fixtures/keyboard true) 
+;(initialize fixtures/keyboard true) 
 
  
 (defn on-js-reload []
