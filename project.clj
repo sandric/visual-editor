@@ -5,12 +5,17 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :min-lein-version "2.5.3"
-  
+
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.8.40"]
                  [org.clojure/core.async "0.2.374" :exclusions [org.clojure/tools.reader]]
-                 [reagent "0.6.0-alpha"]]
-  
+                 [reagent "0.6.0-alpha"
+                    ; :exclusions [[cljsjs/react]
+                    ;              [cljsjs/react-dom]
+                    ;              ]
+                 ]
+                ]
+
   :plugins [[lein-figwheel "0.5.2"]
             [lein-cljsbuild "1.1.3" :exclusions [[org.clojure/clojure]]]]
 
@@ -25,12 +30,12 @@
       [
         {
           :id "dev"
-          
+
           :figwheel {:on-jsload "visual-editor.core/on-js-reload"}
 
           :source-paths ["src"]
 
-          :compiler 
+          :compiler
           {
             :main visual-editor.core
             :asset-path "compiled"
@@ -45,12 +50,12 @@
 
           :source-paths ["src"]
 
-          :compiler 
+          :compiler
           {
             :main visual-editor.core
 
             :output-to "resources/public/visual-editor-min.js"
-            
+
             :optimizations :advanced
             :pretty-print true
           }

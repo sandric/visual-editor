@@ -268,7 +268,7 @@
 		 row 	(:row button)
 		 column (:column button)]
 
-		{:value value :row row :column column}
+		{:row row :column column :value value}
 	)
 )
 
@@ -293,6 +293,8 @@
 
 (defn ^:export serialize-keyboard []
 
+	(str 
+		"{\"layers\":["
 		(clojure.string/join
 			"," 
 			(map 
@@ -302,6 +304,8 @@
 				@layers
 			)
 		)
+		"]}"
+	)
 )
 
 
