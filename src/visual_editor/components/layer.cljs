@@ -1,122 +1,95 @@
 (ns visual-editor.components.layer
-  	(:require 
-		[reagent.core :as r]
+  (:require
+   [reagent.core :as r]
 
-		[visual-editor.db :as db]
+   [visual-editor.db :as db]
 
-		[visual-editor.components.button :as button-components]
-  	)
-)
+   [visual-editor.components.button :as button-components])
+  )
 
 
 (defn layer [id]
+  (let [layer (db/layer-by-id id)
+        name (:name layer)
+        color (:color layer)
+        buttons (db/buttons-by-layer-id id)]
 
-	(let [layer 		(db/layer-by-id id)
-		  name    		(:name layer)
-		  color    		(:color layer)
-		  buttons 		(db/buttons-by-layer-id id)]
+    [:div.layer
+     {
+      :class (when (= @db/selected-layer-id id) "selected")
+      :style { :background-color color }
+      }
 
-		[:div.layer 
-			{
-				:class (when (= @db/selected-layer-id id) "selected")
-				:style {
-					:background-color color
-				}
-			}
+     [:div.control (str "ID: " id " Name: " name)]
 
-			[:div.control (str "ID: " id " Name: " name)]
+     [:div.control
+      (when @db/edit-mode
+        [:button
+         { :on-click #(db/remove-layer id) }
+         "remove"])
+      (when @db/edit-mode
+        [:button
+         { :on-click #(db/clone-layer id) }
+         "clone"])
+      (when @db/edit-mode
+        [:button
+         { :on-click #(db/clear-layer id) }
+         "clear"])
 
-			[:div.control
+      (if @db/edit-mode
+        [:form
+         [:input
+          {
+           :type "text"
+           :maxLength 8
+           :value name
 
-				(when @db/edit-mode
-					[:button 
-						{
-							:on-click #(db/remove-layer id)
-						}
-						"remove"])
-				(when @db/edit-mode
-					[:button 
-						{
-							:on-click #(db/clone-layer id)
-						}
-						"clone"])
-				(when @db/edit-mode
-					[:button 
-						{
-							:on-click #(db/clear-layer id)
-						}
-						"clear"])
+           :on-change (fn [e]
+                        (db/layer-update layer {:name (-> e .-target .-value)})
+                        )
+           }]
 
-				(if @db/edit-mode
+         [:input
+          {
+           :type "text"
+           :maxLength 8
+           :value color
 
-					[:form
-						
-						[:input 
-							{
-								:type "text" 
-								:maxLength 8
-								:value name
-					            
-					            :on-change (fn [e]
-					            	(db/layer-update layer {:name (-> e .-target .-value)})
-					            )
-							}
-						] 
+           :on-change (fn [e]
+                        (db/layer-update layer {:color (-> e .-target .-value)}))
+           }]]
 
-						[:input 
-							{
-								:type "text" 
-								:maxLength 8
-								:value color
-					            
-					            :on-change (fn [e]
-					            	(db/layer-update layer {:color (-> e .-target .-value)})
-					            )
-							}
-						] 
-					]
+        [:pre name])]
 
-					[:pre name]
-				)
-			]
-
-			[:div.layout
-				(for [button buttons]
-					^{:key (str id (:row button) (:column button))} [button-components/button button]
-				)
-			]
-		]
-	)
-)
-
+     [:div.layout
+      (for [button buttons]
+        ^{:key (str id (:row button) (:column button))}
+        [button-components/button button])]]))
 
 (defn thumb [id]
+  (let [layer (db/layer-by-id id)
+        name (:name layer)
+        color (:color layer)
+        buttons (db/buttons-by-layer-id id)]
 
-	(let [layer 		(db/layer-by-id id)
-		  name    		(:name layer)
-		  color    		(:color layer)
-		  buttons 	 	(db/buttons-by-layer-id id)]
+    [:div.layer.thumb
+     {
+      :class
+      (str
+       (when (= @db/selected-layer-id id)
+         "selected")
+       (when (= @db/hovered-layer-id id)
+         " hovered"))
 
-		[:div.layer.thumb 
-			{
-				:class (str (when (= @db/selected-layer-id id) "selected") (when (= @db/hovered-layer-id id) " hovered"))
+      :style { :background-color color }
 
-				:style {
-					:background-color color
-				}
+      :on-click (fn []
+                  (reset! db/selected-layer-id id))
+      }
 
-				:on-click (fn []
-					(reset! db/selected-layer-id id)
-				)
-			}
+     [:div.control (str "ID: " id " Name: " name)]
 
-			[:div.control (str "ID: " id " Name: " name)]
-
-			[:div.layout
-				(for [button buttons]
-					^{:key (str id (:row button) (:column button))} [button-components/thumb button]
-				)
-			]
-		]
-	)
-)
+     [:div.layout
+      (for [button buttons]
+        ^{:key (str id (:row button) (:column button))}
+        [button-components/thumb button])]]))
